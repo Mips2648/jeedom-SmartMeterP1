@@ -21,6 +21,8 @@
 require_once __DIR__ . '/../../../../core/php/core.inc.php';
 require_once dirname(__FILE__) . '/../../vendor/autoload.php';
 
+use Mips\Http\HttpClient;
+
 class SmartMeterP1 extends eqLogic {
 	use MipsEqLogicTrait;
 
@@ -98,9 +100,10 @@ class SmartMeterP1 extends eqLogic {
 
 	public static function daemon() {
 		foreach (self::byType(__CLASS__, true) as $eqLogic) {
+			$host = $eqLogic->getConfiguration('host');
+			if ($host == '') continue;
 
-			$host = "192.168.100.250";
-
+			log::add(__CLASS__, 'info', "Start refresh of data for {$eqLogic->getName()}");
 			$date = new DateTime();
 			$weekday = $date->format('w');
 			$year = $date->format('y');
@@ -109,9 +112,13 @@ class SmartMeterP1 extends eqLogic {
 			$hour = $date->format('G');
 			$minute = $date->format('i');
 
-			$url = "http://$host/?1=REFRESH|1|{$weekday}|{$year}|{$month}|{$day}|{$hour}|{$minute}";
-			log::add(__CLASS__, 'debug', "Request:{$url}");
-			$data = file_get_contents($url);
+			$httpClient = new HttpClient("http://{$host}/", log::getLogger(__CLASS__));
+			$response = $httpClient->doGet("?1=REFRESH|1|{$weekday}|{$year}|{$month}|{$day}|{$hour}|{$minute}");
+			if (!$response->isSuccess()) {
+				log::add(__CLASS__, 'error', "Erreur REFRESH: ({$response->getHttpStatusCode()}) - {$response->getError()}");
+				continue;
+			}
+			$data = $response->getBody();
 			log::add(__CLASS__, 'debug', "Data:{$data}");
 			$arr = explode('|', $data);
 
@@ -158,7 +165,6 @@ class SmartMeterP1 extends eqLogic {
 							$eqLogic->parseExportLow(array_slice($arr, $index, 12));
 							$index += 12;
 							break;
-
 						default:
 							$index += 12;
 							break;
@@ -166,13 +172,6 @@ class SmartMeterP1 extends eqLogic {
 				}
 				$mask *= 2;
 			}
-
-			// $importexport = cmd::byId(6185);
-			// $importexport->event($importExportPower);
-			// $import = cmd::byId(6183);
-			// $import->event($importPower);
-			// $export = cmd::byId(6184);
-			// $export->event($arr[30]);
 		}
 	}
 
@@ -242,6 +241,24 @@ class SmartMeterP1 extends eqLogic {
 
 	public function postInsert() {
 		$this->createCommands();
+	}
+
+	public function postSave() {
+		$host = $this->getConfiguration('host');
+		if ($host == '') return;
+		log::add(__CLASS__, 'info', "Load config for {$this->getName()}");
+
+		$httpClient = new HttpClient("http://{$host}/", log::getLogger(__CLASS__));
+		$response = $httpClient->doGet("?1=LOAD_CONFIG");
+		if (!$response->isSuccess()) {
+			log::add(__CLASS__, 'error', "Erreur during LOAD_CONFIG: ({$response->getHttpStatusCode()}) - {$response->getError()}");
+			return;
+		}
+		$data = $response->getBody();
+		log::add(__CLASS__, 'debug', "Config:{$data}");
+		$arr = explode('|', $data);
+		$this->setConfiguration('meterId', $arr[2]);
+		$this->save(true);
 	}
 }
 

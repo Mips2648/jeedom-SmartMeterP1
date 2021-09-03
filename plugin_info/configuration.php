@@ -21,31 +21,3 @@ if (!isConnect()) {
     include_file('desktop', '404', 'php');
     die();
 }
-?>
-<form class="form-horizontal">
-    <fieldset>
-
-        <legend><i class="fas fa-user-cog"></i> {{Authentification}}</legend>
-        <div class="form-group">
-            <label class="col-sm-4 control-label">{{Nom d'utilisateur}}</label>
-            <div class="col-sm-4">
-                <input type="text" class="configKey form-control" data-l1key="user" placeholder="{{Saisir le nom d'utilisateur}}" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-4 control-label">{{Mot de passe}}</label>
-            <div class="col-sm-4">
-                <input type="password" class="configKey form-control" data-l1key="password" placeholder="{{Saisir le mot de passe}}" />
-            </div>
-        </div>
-
-        <legend><i class="fas fa-university"></i> {{Démon}}</legend>
-        <div class="form-group">
-            <label class="col-sm-4 control-label">{{Port socket interne}}</label>
-            <div class="col-sm-2">
-                <input class="configKey form-control" data-l1key="socketport" placeholder="55069" />
-            </div>
-        </div>
-
-    </fieldset>
-</form>

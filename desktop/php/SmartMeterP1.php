@@ -114,6 +114,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" />{{Visible}}</label>
                                     </div>
                                 </div>
+                                <br />
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{{IP}}</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="host" placeholder="{{Adresse IP}}" />
+                                    </div>
+                                </div>
                             </fieldset>
                         </form>
                     </div>
@@ -127,40 +134,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">{{Type}}</label>
+                                    <label class="col-sm-4 control-label">{{Smart Meter ID}}</label>
                                     <div class="col-sm-8">
-                                        <span class="label label-default eqLogicAttr" data-l1key="configuration" data-l2key="type"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">{{Numéro de série}}</label>
-                                    <div class="col-sm-8">
-                                        <span class="label label-default eqLogicAttr" data-l1key="configuration" data-l2key="serial_number"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">{{Firmware}}</label>
-                                    <div class="col-sm-8">
-                                        <span class="label label-default eqLogicAttr" data-l1key="configuration" data-l2key="firmware_version"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">{{MAC ethernet}}</label>
-                                    <div class="col-sm-8">
-                                        <span class="label label-default eqLogicAttr" data-l1key="configuration" data-l2key="ethernet_mac"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">{{MAC wifi}}</label>
-                                    <div class="col-sm-8">
-                                        <span class="label label-default eqLogicAttr" data-l1key="configuration" data-l2key="wifi_mac"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label"></label>
-                                    <div class="col-sm-8">
-                                        <span class="label label-default eqLogicAttr" data-l1key="configuration" data-l2key="model_type"></span>
-                                        <img src="core/img/no_image.gif" data-original=".png" id="img_device" class="img-responsive" style="max-height : 240px;margin-top: 10px" />
+                                        <span class="label label-default eqLogicAttr" data-l1key="configuration" data-l2key="meterId"></span>
                                     </div>
                                 </div>
                             </fieldset>
