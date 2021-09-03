@@ -234,7 +234,7 @@ class SmartMeterP1 extends eqLogic {
 	public function createCommands($syncValues = false) {
 		log::add(__CLASS__, 'debug', "Checking commands of {$this->getName()}");
 
-		$this->createCommandsFromConfigFile(__DIR__ . '/../config/SmartMeterP1.json', 'SmartMeterP1');
+		$this->createCommandsFromConfigFile(__DIR__ . '/../config/SmartMeterP1.json', 'lowi');
 
 		return $this;
 	}
