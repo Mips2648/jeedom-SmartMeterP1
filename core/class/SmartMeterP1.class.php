@@ -28,12 +28,6 @@ class SmartMeterP1 extends eqLogic {
 
 	public static $_encryptConfigKey = array('user', 'password');
 
-	public function getCmdInfoValue($cmdId) {
-		$cmd = $this->getCmd(null, $cmdId);
-		if (!is_object($cmd)) return '';
-		return $cmd->execCmd();
-	}
-
 	/**
 	 * @return cron
 	 */
@@ -175,9 +169,29 @@ class SmartMeterP1 extends eqLogic {
 		}
 	}
 
+	private static function getTopicPrefix() {
+		return config::byKey('topic_prefix', __CLASS__, 'lowi', true);
+	}
+
+	private static function tryPublishToMQTT($topic, $value) {
+		try {
+			$_MQTT2 = 'mqtt2';
+			if (!class_exists($_MQTT2)) {
+				log::add(__CLASS__, 'debug', __('Le plugin mqtt2 n\'est pas installé', __FILE__));
+				return;
+			}
+			$topic = self::getTopicPrefix() . '/' . $topic;
+			$_MQTT2::publish($topic, $value);
+			log::add(__CLASS__, 'debug', "published to mqtt: {$topic}={$value}");
+		} catch (\Throwable $th) {
+			log::add(__CLASS__, 'warning', __('Une erreur s\'est produite dans le plugin mqtt2:', __FILE__) . $th->getMessage());
+		}
+	}
+
 	private function parseImporExport($arr) {
 		log::add(__CLASS__, 'debug', "Import-Export:" . implode('|', $arr));
 		$this->checkAndUpdateCmd("importExportPower", $arr[2]);
+		self::tryPublishToMQTT($this->getId() . '/importExportPower', $arr[2]);
 		$this->checkAndUpdateCmd("importExportDay", $arr[3] / 1000);
 		$this->checkAndUpdateCmd("importExportMonth", $arr[4] / 1000);
 		$this->checkAndUpdateCmd("totalImport", $arr[5] / 1000);
@@ -192,6 +206,8 @@ class SmartMeterP1 extends eqLogic {
 		$this->checkAndUpdateCmd("importMonth", $arr[4] / 1000);
 		$this->checkAndUpdateCmd("totalImportHigh", $arr[5] / 1000);
 		$this->checkAndUpdateCmd("totalImportLow", $arr[6] / 1000);
+
+		self::tryPublishToMQTT($this->getId() . '/importPower', $arr[2]);
 	}
 
 	private function parseExport($arr) {
@@ -201,6 +217,8 @@ class SmartMeterP1 extends eqLogic {
 		$this->checkAndUpdateCmd("exportMonth", $arr[4] / 1000);
 		$this->checkAndUpdateCmd("totalExportHigh", $arr[5] / 1000);
 		$this->checkAndUpdateCmd("totalExportLow", $arr[6] / 1000);
+
+		self::tryPublishToMQTT($this->getId() . '/exportPower', $arr[2]);
 	}
 
 	private function parseImportHigh($arr) {

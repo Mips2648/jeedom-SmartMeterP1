@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'a6acb6a82d3db4b4f730fa13009627b6b6fb6107',
+    'reference' => 'ab12b512f4e50cce2d5d84f8d24eb335e4ad7761',
     'name' => 'mips/jeedom-smartmeterp1',
   ),
   'versions' => 
@@ -50,16 +50,16 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'a6acb6a82d3db4b4f730fa13009627b6b6fb6107',
+      'reference' => 'ab12b512f4e50cce2d5d84f8d24eb335e4ad7761',
     ),
     'mips/jeedom-tools' => 
     array (
-      'pretty_version' => 'v0.6',
-      'version' => '0.6.0.0',
+      'pretty_version' => 'v0.18',
+      'version' => '0.18.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '7c40c4b5cf29f6c627012ea091aa6fe9828734b5',
+      'reference' => 'e4b72769e625f82644a8f9626f9dabc1f2dc21f9',
     ),
     'psr/log' => 
     array (
