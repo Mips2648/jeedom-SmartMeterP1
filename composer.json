@@ -1,0 +1,14 @@
+{
+    "name": "mips/jeedom-smartmeterp1",
+    "description": "Plugin SmartMeterP1 jeedom",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Mips"
+        }
+    ],
+    "require": {
+        "mips/jeedom-tools": ">=0.18",
+        "mips/httpclient": "~0.7"
+    }
+}

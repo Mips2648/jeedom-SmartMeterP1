@@ -1,0 +1,396 @@
+{
+    "lowi": [
+        {
+            "logicalId": "importExportPower",
+            "name": "Puissance Import-Export",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 1,
+            "isHistorized": 1,
+            "unite": "W",
+            "initialValue": 0
+        },
+        {
+            "logicalId": "importExportDay",
+            "name": "Import-Export jour",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "importExportMonth",
+            "name": "Import-Export mois",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "totalImport",
+            "name": "Total consommation",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "totalExport",
+            "name": "Total injection",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "totalImportExport",
+            "name": "Total Import-Export",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "importPower",
+            "name": "Puissance import",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 1,
+            "isHistorized": 1,
+            "unite": "W",
+            "initialValue": 0
+        },
+        {
+            "logicalId": "importDay",
+            "name": "Import jour",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "importMonth",
+            "name": "Import mois",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "totalImportHigh",
+            "name": "Total import heure pleine",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "totalImportLow",
+            "name": "Total import heure creuse",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "exportPower",
+            "name": "Puissance export",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 1,
+            "isHistorized": 1,
+            "unite": "W",
+            "initialValue": 0
+        },
+        {
+            "logicalId": "exportDay",
+            "name": "Export jour",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "exportMonth",
+            "name": "Export mois",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "totalExportHigh",
+            "name": "Total export heure pleine",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "totalExportLow",
+            "name": "Total export heure creuse",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "importHighPower",
+            "name": "Puissance import heure pleine",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 1,
+            "unite": "W",
+            "initialValue": 0
+        },
+        {
+            "logicalId": "importHighDay",
+            "name": "Import heure pleine jour",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "importHighMonth",
+            "name": "Import heure pleine mois",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "importLowPower",
+            "name": "Puissance import heure creuse",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 1,
+            "unite": "W",
+            "initialValue": 0
+        },
+        {
+            "logicalId": "importLowDay",
+            "name": "Import heure creuse jour",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "importLowMonth",
+            "name": "Import heure creuse mois",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "exportHighPower",
+            "name": "Puissance export heure pleine",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 1,
+            "unite": "W",
+            "initialValue": 0
+        },
+        {
+            "logicalId": "exportHighDay",
+            "name": "Export heure pleine jour",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "exportHighMonth",
+            "name": "Export heure pleine mois",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "exportLowPower",
+            "name": "Puissance export heure creuse",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 1,
+            "unite": "W",
+            "initialValue": 0
+        },
+        {
+            "logicalId": "exportLowDay",
+            "name": "Export heure creuse jour",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "exportLowMonth",
+            "name": "Export heure creuse mois",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        }
+    ]
+}
