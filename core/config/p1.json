@@ -1,0 +1,283 @@
+{
+    "p1": [
+        {
+            "logicalId": "1.8.1",
+            "name": "Prélèvement heures pleines",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "CONSUMPTION",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "1.8.2",
+            "name": "Prélèvement heures creuses",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "CONSUMPTION",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "2.8.1",
+            "name": "Injection heures pleines",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "2.8.2",
+            "name": "Injection heures creuses",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "totalImport",
+            "name": "Prélèvement total",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "CONSUMPTION",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "dayImport",
+            "name": "Prélèvement jour",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "CONSUMPTION",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "monthImport",
+            "name": "Prélèvement mois",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "CONSUMPTION",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "totalExport",
+            "name": "Injection total",
+            "type": "info",
+            "subtype": "numeric",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "dayExport",
+            "name": "Injection jour",
+            "type": "info",
+            "subtype": "numeric",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "monthExport",
+            "name": "Injection mois",
+            "type": "info",
+            "subtype": "numeric",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "1.7.0",
+            "name": "Puissance prélevée",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 1,
+            "isHistorized": 1,
+            "unite": "W",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "2.7.0",
+            "name": "Puissance injectée",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 1,
+            "isHistorized": 1,
+            "unite": "W",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "Import-Export",
+            "name": "Puissance prélevée - injectée",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 1,
+            "isHistorized": 1,
+            "unite": "W",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "32.7.0",
+            "name": "Tension phase 1",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "VOLTAGE",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "V",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "52.7.0",
+            "name": "Tension phase 2",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "VOLTAGE",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "V",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "72.7.0",
+            "name": "Tension phase 3",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "VOLTAGE",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "V",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "31.7.0",
+            "name": "Intensité phase 1",
+            "type": "info",
+            "subtype": "numeric",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "A",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "51.7.0",
+            "name": "Intensité phase 2",
+            "type": "info",
+            "subtype": "numeric",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "A",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "71.7.0",
+            "name": "Intensité phase 3",
+            "type": "info",
+            "subtype": "numeric",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "A",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        }
+    ]
+}

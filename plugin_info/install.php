@@ -20,10 +20,34 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function SmartMeterP1_install() {
     SmartMeterP1::setDaemon();
+
+    $cron = cron::byClassAndFunction('SmartMeterP1', 'dailyReset');
+    if (!is_object($cron)) {
+        $cron = new cron();
+        $cron->setClass('SmartMeterP1');
+        $cron->setFunction('dailyReset');
+    }
+    $cron->setEnable(1);
+    $cron->setDeamon(0);
+    $cron->setSchedule('59 23 * * *');
+    $cron->setTimeout(10);
+    $cron->save();
 }
 
 function SmartMeterP1_update() {
     SmartMeterP1::setDaemon();
+
+    $cron = cron::byClassAndFunction('SmartMeterP1', 'dailyReset');
+    if (!is_object($cron)) {
+        $cron = new cron();
+        $cron->setClass('SmartMeterP1');
+        $cron->setFunction('dailyReset');
+    }
+    $cron->setEnable(1);
+    $cron->setDeamon(0);
+    $cron->setSchedule('59 23 * * *');
+    $cron->setTimeout(10);
+    $cron->save();
 }
 
 function SmartMeterP1_remove() {

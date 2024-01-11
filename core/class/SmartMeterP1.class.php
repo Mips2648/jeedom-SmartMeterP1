@@ -1,32 +1,10 @@
 <?php
 
-/* This file is part of Jeedom.
- *
- * Jeedom is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Jeedom is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
- */
-
-/* * ***************************Includes********************************* */
-
 require_once __DIR__ . '/../../../../core/php/core.inc.php';
 require_once dirname(__FILE__) . '/../../vendor/autoload.php';
 
-use Mips\Http\HttpClient;
-
 class SmartMeterP1 extends eqLogic {
 	use MipsEqLogicTrait;
-
-	public static $_encryptConfigKey = array('user', 'password');
 
 	/**
 	 * @return cron
@@ -91,81 +69,168 @@ class SmartMeterP1 extends eqLogic {
 		$cron->save();
 	}
 
-
 	public static function daemon() {
+		/** @var SmartMeterP1 */
 		foreach (self::byType(__CLASS__, true) as $eqLogic) {
-			$host = $eqLogic->getConfiguration('host');
-			if ($host == '') continue;
+			$eqLogic->refreshP1();
+		}
+	}
 
-			log::add(__CLASS__, 'info', "Start refresh of data for {$eqLogic->getName()}");
+	public static function cron() {
+		/** @var SmartMeterP1 */
+		foreach (self::byType(__CLASS__, true) as $eqLogic) {
+			$currentImport = $eqLogic->getCmdInfoValue('totalImport', 0);
+
+			/** @var SmartMeterP1Cmd */
+			$dayImport = $eqLogic->getCmd('info', 'dayImport');
+			if (is_object($dayImport)) {
+				$dayIndex = $dayImport->getCache('index', 0);
+				if ($dayIndex == 0) {
+					$dayImport->setCache('index', $currentImport);
+					$dayIndex = $currentImport;
+				}
+				$dayImport->event(round($currentImport - $dayIndex, 3));
+			}
+			/** @var SmartMeterP1Cmd */
+			$monthImport = $eqLogic->getCmd('info', 'monthImport');
+			if (is_object($monthImport)) {
+				$monthIndex = $monthImport->getCache('index', 0);
+				if ($monthIndex == 0) {
+					$monthImport->setCache('index', $currentImport);
+					$monthIndex = $currentImport;
+				}
+				$monthImport->event(round($currentImport - $monthIndex, 3));
+			}
+
+			$currentExport = $eqLogic->getCmdInfoValue('totalExport', 0);
+
+			/** @var SmartMeterP1Cmd */
+			$dayExport = $eqLogic->getCmd('info', 'dayExport');
+			if (is_object($dayExport)) {
+				$dayIndex = $dayExport->getCache('index', 0);
+				if ($dayIndex == 0) {
+					$dayExport->setCache('index', $currentExport);
+					$dayIndex = $currentExport;
+				}
+				$dayExport->event(round($currentExport - $dayIndex, 3));
+			}
+			/** @var SmartMeterP1Cmd */
+			$monthExport = $eqLogic->getCmd('info', 'monthExport');
+			if (is_object($monthExport)) {
+				$monthIndex = $monthExport->getCache('index', 0);
+				if ($monthIndex == 0) {
+					$monthExport->setCache('index', $currentExport);
+					$monthIndex = $currentExport;
+				}
+				$monthExport->event(round($currentExport - $monthIndex, 3));
+			}
+		}
+	}
+
+	public static function dailyReset() {
+		/** @var SmartMeterP1 */
+		foreach (self::byType(__CLASS__, true) as $eqLogic) {
+			$currentImport = $eqLogic->getCmdInfoValue('totalImport', 0);
+			$currentExport = $eqLogic->getCmdInfoValue('totalExport', 0);
+
+			/** @var SmartMeterP1Cmd */
+			$dayImport = $eqLogic->getCmd('info', 'dayImport');
+			if (is_object($dayImport)) {
+				$dayImport->setCache('index', $currentImport);
+			}
+			/** @var SmartMeterP1Cmd */
+			$dayExport = $eqLogic->getCmd('info', 'dayExport');
+			if (is_object($dayExport)) {
+				$dayExport->setCache('index', $currentExport);
+			}
+
 			$date = new DateTime();
-			$weekday = $date->format('w');
-			$year = $date->format('y');
-			$month = $date->format('n');
-			$day = $date->format('j');
-			$hour = $date->format('G');
-			$minute = $date->format('i');
-
-			$httpClient = new HttpClient("http://{$host}/", log::getLogger(__CLASS__));
-			$response = $httpClient->doGet("?1=REFRESH|1|{$weekday}|{$year}|{$month}|{$day}|{$hour}|{$minute}");
-			if (!$response->isSuccess()) {
-				log::add(__CLASS__, 'error', "Erreur REFRESH: ({$response->getHttpStatusCode()}) - {$response->getError()}");
-				continue;
+			$lastDay = $date->format('Y-m-t');
+			$toDay = $date->format('Y-m-d');
+			if ($lastDay === $toDay) {
+				/** @var SmartMeterP1Cmd */
+				$monthImport = $eqLogic->getCmd('info', 'monthImport');
+				if (is_object($monthImport)) {
+					$monthImport->setCache('index', $currentImport);
+				}
+				/** @var SmartMeterP1Cmd */
+				$monthExport = $eqLogic->getCmd('info', 'monthExport');
+				if (is_object($monthExport)) {
+					$monthExport->setCache('index', $currentExport);
+				}
 			}
-			$data = $response->getBody();
-			log::add(__CLASS__, 'debug', "Data:{$data}");
-			$arr = explode('|', $data);
+		}
+	}
 
-			if ($arr[0] != 2) {
-				log::add(__CLASS__, 'warning', "Incorrect response received");
-				return;
-			}
+	private function refreshP1() {
+		$host = $this->getConfiguration('host');
+		if ($host == '') return;
 
-			$mod_max = 16;
-			$color = $arr[1];
-			$temp_valmod = $arr[2];
-			$lastUpdate = $arr[3];
-			$mask = 1;
-			$index = 4;
+		$port = $this->getConfiguration('port', 8088);
+		if ($port == '') return;
 
-			for ($mod = 0; $mod < $mod_max; $mod++) {
-				if (($temp_valmod & $mask) == $mask) {
-					switch ($arr[$index]) {
-						case 0:
-							$eqLogic->parseImporExport(array_slice($arr, $index, 12));
-							$index += 12;
-							break;
-						case 1:
-							$eqLogic->parseImport(array_slice($arr, $index, 12));
-							$index += 12;
-							break;
-						case 2:
-							$eqLogic->parseExport(array_slice($arr, $index, 12));
-							$index += 12;
-							break;
-						case 5:
-							$eqLogic->parseImportHigh(array_slice($arr, $index, 12));
-							$index += 12;
-							break;
-						case 6:
-							$eqLogic->parseImportLow(array_slice($arr, $index, 12));
-							$index += 12;
-							break;
-						case 7:
-							$eqLogic->parseExportHigh(array_slice($arr, $index, 12));
-							$index += 12;
-							break;
-						case 8:
-							$eqLogic->parseExportLow(array_slice($arr, $index, 12));
-							$index += 12;
-							break;
-						default:
-							$index += 12;
-							break;
+		$cfgTimeOut = "5";
+
+		try {
+			$f = fsockopen($host, $port, $cfgTimeOut);
+
+			if (!$f) {
+				log::add(__CLASS__, 'warning', "Cannot connect to {$this->getName()} ({$host}:{$port})");
+			} else {
+				log::add(__CLASS__, 'info', "Connected to {$this->getName()} ({$host}:{$port})");
+
+				$codes = [
+					"1.8.1",	// import high
+					"1.8.2",	// import low
+					"2.8.1",	// export high
+					"2.8.2",	// export low
+					"1.7.0",	// import power
+					"2.7.0",	// export power
+					"32.7.0",	// voltage 1
+					"52.7.0",	// voltage 2
+					"72.7.0",	// voltage 3
+					"31.7.0",	// intensity 1
+					"51.7.0",	// intensity 1
+					"71.7.0"	// intensity 1
+				];
+				$fullregex = '/\d\-\d:(\d+\.\d+\.\d+)\((\d+\.\d{1,3})\*([VAkWh]+){1,3}\)/';
+				$coderegex = '/\d\-\d:(\d+\.\d+\.\d+).*/';
+				$results = [];
+				while (($data =  fgets($f, 4096)) !== false) {
+					$matches = [];
+					if (preg_match($fullregex, $data, $matches) === 1) {
+						$current_code = $matches[1];
+						if (in_array($current_code, $codes)) {
+							$value = $matches[2];
+							$unit = $matches[3];
+							// log::add(__CLASS__, 'debug', "{$current_code}: {$value} {$unit}");
+							if ($unit === 'kW') {
+								$value *= 1000;
+							}
+							$this->checkAndUpdateCmd($current_code, $value);
+							$results[$current_code] = $value;
+						} else {
+							// log::add(__CLASS__, 'debug', "Unknown code {$current_code}");
+						}
+					} elseif (preg_match($coderegex, $data, $matches) === 1) {
+						$current_code = $matches[1];
+						if ($current_code === "96.13.0") {
+							$this->checkAndUpdateCmd('totalImport', $results['1.8.1'] + $results['1.8.2']);
+							$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
+							$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
+							// log::add(__CLASS__, 'debug', "============");
+							sleep(1);
+						}
+					} else {
+						// log::add(__CLASS__, 'debug', "cannot extract actual code & value from raw data: {$data}");
 					}
 				}
-				$mask *= 2;
 			}
+		} catch (\Throwable $th) {
+			log::add(__CLASS__, 'error', "Error with {$this->getName()} ({$host}:{$port}): {$th->getMessage()}");
+		} finally {
+			log::add(__CLASS__, 'info', "Closing connection to {$this->getName()} ({$host}:{$port})");
+			fclose($f);
 		}
 	}
 
@@ -188,71 +253,10 @@ class SmartMeterP1 extends eqLogic {
 		}
 	}
 
-	private function parseImporExport($arr) {
-		log::add(__CLASS__, 'debug', "Import-Export:" . implode('|', $arr));
-		$this->checkAndUpdateCmd("importExportPower", $arr[2]);
-		self::tryPublishToMQTT($this->getId() . '/importExportPower', $arr[2]);
-		$this->checkAndUpdateCmd("importExportDay", $arr[3] / 1000);
-		$this->checkAndUpdateCmd("importExportMonth", $arr[4] / 1000);
-		$this->checkAndUpdateCmd("totalImport", $arr[5] / 1000);
-		$this->checkAndUpdateCmd("totalExport", $arr[6] / 1000);
-		$this->checkAndUpdateCmd("totalImportExport", ($arr[5] - $arr[6]) / 1000);
-	}
-
-	private function parseImport($arr) {
-		log::add(__CLASS__, 'debug', "Import H+L:" . implode('|', $arr));
-		$this->checkAndUpdateCmd("importPower", $arr[2]);
-		$this->checkAndUpdateCmd("importDay", $arr[3] / 1000);
-		$this->checkAndUpdateCmd("importMonth", $arr[4] / 1000);
-		$this->checkAndUpdateCmd("totalImportHigh", $arr[5] / 1000);
-		$this->checkAndUpdateCmd("totalImportLow", $arr[6] / 1000);
-
-		self::tryPublishToMQTT($this->getId() . '/importPower', $arr[2]);
-	}
-
-	private function parseExport($arr) {
-		log::add(__CLASS__, 'debug', "Export H+L:" . implode('|', $arr));
-		$this->checkAndUpdateCmd("exportPower", $arr[2]);
-		$this->checkAndUpdateCmd("exportDay", $arr[3] / 1000);
-		$this->checkAndUpdateCmd("exportMonth", $arr[4] / 1000);
-		$this->checkAndUpdateCmd("totalExportHigh", $arr[5] / 1000);
-		$this->checkAndUpdateCmd("totalExportLow", $arr[6] / 1000);
-
-		self::tryPublishToMQTT($this->getId() . '/exportPower', $arr[2]);
-	}
-
-	private function parseImportHigh($arr) {
-		log::add(__CLASS__, 'debug', "Import H:" . implode('|', $arr));
-		$this->checkAndUpdateCmd("importHighPower", $arr[2]);
-		$this->checkAndUpdateCmd("importHighDay", $arr[3] / 1000);
-		$this->checkAndUpdateCmd("importHighMonth", $arr[4] / 1000);
-	}
-
-	private function parseImportLow($arr) {
-		log::add(__CLASS__, 'debug', "Import L:" . implode('|', $arr));
-		$this->checkAndUpdateCmd("importLowPower", $arr[2]);
-		$this->checkAndUpdateCmd("importLowDay", $arr[3] / 1000);
-		$this->checkAndUpdateCmd("importLowMonth", $arr[4] / 1000);
-	}
-
-	private function parseExportHigh($arr) {
-		log::add(__CLASS__, 'debug', "Export H:" . implode('|', $arr));
-		$this->checkAndUpdateCmd("exportHighPower", $arr[2]);
-		$this->checkAndUpdateCmd("exportHighDay", $arr[3] / 1000);
-		$this->checkAndUpdateCmd("exportHighMonth", $arr[4] / 1000);
-	}
-
-	private function parseExportLow($arr) {
-		log::add(__CLASS__, 'debug', "Export L:" . implode('|', $arr));
-		$this->checkAndUpdateCmd("exportLowPower", $arr[2]);
-		$this->checkAndUpdateCmd("exportLowDay", $arr[3]);
-		$this->checkAndUpdateCmd("exportLowMonth", $arr[4]);
-	}
-
 	public function createCommands($syncValues = false) {
 		log::add(__CLASS__, 'debug', "Checking commands of {$this->getName()}");
 
-		$this->createCommandsFromConfigFile(__DIR__ . '/../config/SmartMeterP1.json', 'lowi');
+		$this->createCommandsFromConfigFile(__DIR__ . '/../config/p1.json', 'p1');
 
 		return $this;
 	}
@@ -262,21 +266,9 @@ class SmartMeterP1 extends eqLogic {
 	}
 
 	public function postSave() {
-		$host = $this->getConfiguration('host');
-		if ($host == '') return;
-		log::add(__CLASS__, 'info', "Load config for {$this->getName()}");
+		// $host = $this->getConfiguration('host');
+		// if ($host == '') return;
 
-		$httpClient = new HttpClient("http://{$host}/", log::getLogger(__CLASS__));
-		$response = $httpClient->doGet("?1=LOAD_CONFIG");
-		if (!$response->isSuccess()) {
-			log::add(__CLASS__, 'error', "Erreur during LOAD_CONFIG: ({$response->getHttpStatusCode()}) - {$response->getError()}");
-			return;
-		}
-		$data = $response->getBody();
-		log::add(__CLASS__, 'debug', "Config:{$data}");
-		$arr = explode('|', $data);
-		$this->setConfiguration('meterId', $arr[2]);
-		$this->save(true);
 	}
 }
 

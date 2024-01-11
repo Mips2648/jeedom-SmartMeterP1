@@ -116,9 +116,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 </div>
                                 <br />
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">{{IP}}</label>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="host" placeholder="{{Adresse IP}}" />
+                                    <label class="col-sm-3 control-label">{{Hôte}}</label>
+                                    <div class="col-sm-6">
+                                        <div class="input-group">
+                                            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="host" placeholder="Saisir l'adresse IP" />
+                                            <span class="input-group-addon">:</span>
+                                            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="port" placeholder="8088" />
+                                        </div>
                                     </div>
                                 </div>
                             </fieldset>
@@ -130,13 +134,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <div class="form-group">
                                     <label class="col-sm-4 control-label"></label>
                                     <div class="col-sm-8">
-                                        <a id="bt_createCommands" class="btn btn-default"><i class="fas fa-search"></i> {{Créer les commandes manquantes}}</a>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">{{Smart Meter ID}}</label>
-                                    <div class="col-sm-8">
-                                        <span class="label label-default eqLogicAttr" data-l1key="configuration" data-l2key="meterId"></span>
+
                                     </div>
                                 </div>
                             </fieldset>
@@ -145,6 +143,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="commandtab">
+                <a id="bt_createCommands" class="btn btn-default btn-sm pull-right"><i class="fas fa-plus-circle"></i> {{Créer les commandes manquantes}}</a>
+                <br><br>
                 <div class="table-responsive">
                     <table id="table_cmd" class="table table-bordered table-condensed">
                         <thead>
@@ -152,13 +152,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <th style="min-width:220px;width:350px;">{{Nom}}</th>
                                 <th style="min-width:140px;width:200px;">{{Type}}</th>
                                 <th style="min-width:260px;">{{Options}}</th>
-                                <?php
-                                if (version_compare(jeedom::version(), '4.3.0', '>=')) {
-                                ?>
-                                    <th>{{Etat}}</th>
-                                <?php
-                                }
-                                ?>
+                                <th>{{Etat}}</th>
                                 <th style="min-width:80px;width:140px;">{{Actions}}</th>
                             </tr>
                         </thead>
