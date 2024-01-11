@@ -9,7 +9,7 @@ class SmartMeterP1 extends eqLogic {
 	/**
 	 * @return cron
 	 */
-	public static function setDaemon($sleepTime = 10) {
+	public static function setDaemon($sleepTime = 5) {
 		$cron = cron::byClassAndFunction(__CLASS__, 'daemon');
 		if (!is_object($cron)) {
 			$cron = new cron();
@@ -219,7 +219,7 @@ class SmartMeterP1 extends eqLogic {
 							$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
 							$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
 							// log::add(__CLASS__, 'debug', "============");
-							sleep(1);
+							break;
 						}
 					} else {
 						// log::add(__CLASS__, 'debug', "cannot extract actual code & value from raw data: {$data}");
