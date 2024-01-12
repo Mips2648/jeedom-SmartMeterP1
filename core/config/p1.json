@@ -179,7 +179,7 @@
         },
         {
             "logicalId": "Import-Export",
-            "name": "Puissance prélevée - injectée",
+            "name": "Puissance nette",
             "type": "info",
             "subtype": "numeric",
             "generic_type": "POWER",
