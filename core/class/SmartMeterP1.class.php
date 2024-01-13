@@ -9,7 +9,7 @@ class SmartMeterP1 extends eqLogic {
 	/**
 	 * @return cron
 	 */
-	public static function setDaemon($sleepTime = 5) {
+	public static function setDaemon() {
 		$cron = cron::byClassAndFunction(__CLASS__, 'daemon');
 		if (!is_object($cron)) {
 			$cron = new cron();
@@ -18,7 +18,7 @@ class SmartMeterP1 extends eqLogic {
 		$cron->setFunction('daemon');
 		$cron->setEnable(1);
 		$cron->setDeamon(1);
-		$cron->setDeamonSleepTime($sleepTime);
+		$cron->setDeamonSleepTime(config::byKey('daemonSleepTime', __CLASS__, 5));
 		$cron->setTimeout(1440);
 		$cron->setSchedule('* * * * *');
 		$cron->save();
@@ -67,6 +67,14 @@ class SmartMeterP1 extends eqLogic {
 		$cron = self::getDaemonCron();
 		$cron->setEnable($_mode);
 		$cron->save();
+	}
+
+	public static function postConfig_daemonSleepTime($value) {
+		self::setDaemon();
+		$deamon_info = self::deamon_info();
+		if ($deamon_info['state'] == 'ok') {
+			self::deamon_start();
+		}
 	}
 
 	public static function daemon() {
