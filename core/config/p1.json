@@ -190,6 +190,10 @@
                 "dashboard": "tile",
                 "mobile": "line"
             },
+            "configuration": {
+                "minValue": -10000,
+                "maxValue": 10000
+            },
             "initialValue": 0
         },
         {
