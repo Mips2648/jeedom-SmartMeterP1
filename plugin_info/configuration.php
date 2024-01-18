@@ -21,3 +21,18 @@ if (!isConnect()) {
     include_file('desktop', '404', 'php');
     die();
 }
+?>
+<form class="form-horizontal">
+    <fieldset>
+        <legend><i class="fas fa-university"></i> {{Démon}}</legend>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">
+                {{Délai d'actualisation (s)}}
+                <sup><i class="fas fa-question-circle" title="{{Un délai court augmentera la charge de votre système}}"></i></sup>
+            </label>
+            <div class="col-sm-1">
+                <input class="configKey form-control" data-l1key="daemonSleepTime" placeholder="5" />
+            </div>
+        </div>
+    </fieldset>
+</form>
