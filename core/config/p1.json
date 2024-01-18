@@ -282,6 +282,43 @@
                 "mobile": "line"
             },
             "initialValue": 0
+        },
+        {
+            "logicalId": "96.1.1",
+            "name": "Numéro de série",
+            "type": "info",
+            "subtype": "string",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            }
+        },
+        {
+            "logicalId": "96.1.4",
+            "name": "Id",
+            "type": "info",
+            "subtype": "string",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            }
+        },
+        {
+            "logicalId": "96.14.0",
+            "name": "Heures pleines",
+            "type": "info",
+            "subtype": "binary",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 1
         }
     ]
 }

@@ -202,7 +202,7 @@ class SmartMeterP1 extends eqLogic {
 					"71.7.0"	// intensity 1
 				];
 				$fullregex = '/\d\-\d:(\d+\.\d+\.\d+)\((\d+\.\d{1,3})\*([VAkWh]+){1,3}\)/';
-				$coderegex = '/\d\-\d:(\d+\.\d+\.\d+).*/';
+				$coderegex = '/\d\-\d:(\d+\.\d+\.\d+)\((.*)\)/';
 				$results = [];
 				while (($data =  fgets($f, 4096)) !== false) {
 					$matches = [];
@@ -222,12 +222,28 @@ class SmartMeterP1 extends eqLogic {
 						}
 					} elseif (preg_match($coderegex, $data, $matches) === 1) {
 						$current_code = $matches[1];
-						if ($current_code === "96.13.0") {
-							$this->checkAndUpdateCmd('totalImport', $results['1.8.1'] + $results['1.8.2']);
-							$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
-							$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
-							// log::add(__CLASS__, 'debug', "============");
-							break;
+						$current_data = $matches[2];
+
+						switch ($current_code) {
+							case '1.0.0':
+								// datetime; ex:'240118094756W' => 24/01/18 09:47:56
+								// not usefull
+								break;
+							case '96.1.1': // serial number
+							case '96.1.4': // id
+								$this->checkAndUpdateCmd($current_code, $current_data);
+								break;
+							case '96.14.0': // day/night
+								$this->checkAndUpdateCmd($current_code, $current_data == '0001');
+							case '96.13.0': // message and last code from the run
+								$this->checkAndUpdateCmd('totalImport', $results['1.8.1'] + $results['1.8.2']);
+								$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
+								$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
+								// log::add(__CLASS__, 'debug', "============");
+								break 2; // nreak from switch & while because last code from the run
+							default:
+								log::add(__CLASS__, 'debug', "additional unused data: {$current_code}={$current_data}");
+								break;
 						}
 					} else {
 						// log::add(__CLASS__, 'debug', "cannot extract actual code & value from raw data: {$data}");
