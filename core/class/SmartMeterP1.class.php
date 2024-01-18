@@ -235,7 +235,11 @@ class SmartMeterP1 extends eqLogic {
 								break;
 							case '96.14.0': // day/night
 								$this->checkAndUpdateCmd($current_code, $current_data == '0001');
+								break;
 							case '96.13.0': // message and last code from the run
+								if ($current_data != '') {
+									log::add(__CLASS__, 'info', "Message received: {$current_code}={$current_data}");
+								}
 								$this->checkAndUpdateCmd('totalImport', $results['1.8.1'] + $results['1.8.2']);
 								$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
 								$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
