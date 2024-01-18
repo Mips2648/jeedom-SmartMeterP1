@@ -240,7 +240,7 @@ class SmartMeterP1 extends eqLogic {
 								$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
 								$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
 								// log::add(__CLASS__, 'debug', "============");
-								break 2; // nreak from switch & while because last code from the run
+								break 2; // break from switch & while because last code from the run
 							default:
 								log::add(__CLASS__, 'debug', "additional unused data: {$current_code}={$current_data}");
 								break;
