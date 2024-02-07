@@ -179,8 +179,18 @@ class SmartMeterP1 extends eqLogic {
 
 		$cfgTimeOut = "5";
 
+		$flagHomewizard = $this->getConfiguration('flagHomewizard');
+
 		try {
-			$f = fsockopen($host, $port, $cfgTimeOut);
+			if ($flagHomewizard) {
+				$url = "http://{$host}/api/v1/telegram";
+   				$curl = curl_init($url);
+   				curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+   				$f = curl_exec($curl);
+   				curl_close($curl);
+   			} else {
+   				$f = fsockopen($host, $port, $cfgTimeOut);
+			}
 
 			if (!$f) {
 				log::add(__CLASS__, 'warning', "Cannot connect to {$this->getName()} ({$host}:{$port})");
@@ -204,7 +214,17 @@ class SmartMeterP1 extends eqLogic {
 				$fullregex = '/\d\-\d:(\d+\.\d+\.\d+)\((\d+\.\d{1,3})\*([VAkWh]+){1,3}\)/';
 				$coderegex = '/\d\-\d:(\d+\.\d+\.\d+)\((.*)\)/';
 				$results = [];
-				while (($data =  fgets($f, 4096)) !== false) {
+
+				if ($flagHomewizard) {
+					$fa = explode("\n", $f);
+				} else {
+					$fa = array();
+					while (($data =  fgets($f, 4096)) !== false) {
+						$fa[] = $data;
+					}
+				}
+
+				foreach($fa as $data) {
 					$matches = [];
 					if (preg_match($fullregex, $data, $matches) === 1) {
 						$current_code = $matches[1];
@@ -218,7 +238,7 @@ class SmartMeterP1 extends eqLogic {
 							$this->checkAndUpdateCmd($current_code, $value);
 							$results[$current_code] = $value;
 						} else {
-							// log::add(__CLASS__, 'debug', "Unknown code {$current_code}");
+							//log::add(__CLASS__, 'debug', "Unknown code {$current_code}");
 						}
 					} elseif (preg_match($coderegex, $data, $matches) === 1) {
 						$current_code = $matches[1];
@@ -244,22 +264,25 @@ class SmartMeterP1 extends eqLogic {
 								$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
 								$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
 								// log::add(__CLASS__, 'debug', "============");
-								break 2; // break from switch & while because last code from the run
+								break 2; // break from switch & while/foreach because last code from the run
 							default:
-								log::add(__CLASS__, 'debug', "additional unused data: {$current_code}={$current_data}");
+								//log::add(__CLASS__, 'debug', "additional unused data: {$current_code}={$current_data}");
 								break;
 						}
 					} else {
-						// log::add(__CLASS__, 'debug', "cannot extract actual code & value from raw data: {$data}");
+					 	//log::add(__CLASS__, 'debug', "cannot extract actual code & value from raw data: {$data}");
 					}
 				}
 			}
 		} catch (\Throwable $th) {
 			log::add(__CLASS__, 'error', "Error with {$this->getName()} ({$host}:{$port}): {$th->getMessage()}");
 		} finally {
-			log::add(__CLASS__, 'info', "Closing connection to {$this->getName()} ({$host}:{$port})");
-			fclose($f);
+			if ($flagHomewizard == 0) {
+				log::add(__CLASS__, 'info', "Closing connection to {$this->getName()} ({$host}:{$port})");
+				fclose($f);
+			}
 		}
+
 	}
 
 	private static function getTopicPrefix() {
