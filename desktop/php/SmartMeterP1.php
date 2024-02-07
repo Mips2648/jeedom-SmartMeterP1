@@ -32,25 +32,34 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 <span>Community</span>
             </div>
         </div>
-        <legend><i class="fas fa-table"></i> {{Mes SmartMeterP1}}</legend>
-        <div class="input-group" style="margin:5px;">
-            <input class="form-control roundedLeft" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
-            <div class="input-group-btn">
-                <a id="bt_resetSearch" class="btn roundedRight" style="width:30px"><i class="fas fa-times"></i></a>
-            </div>
-        </div>
-        <div class="eqLogicThumbnailContainer">
-            <?php
+        <legend><i class="fas fa-plug"></i> {{Mes SmartMeter P1}}</legend>
+        <?php
+        if (count($eqLogics) == 0) {
+            echo '<br><div class="text-center" style="font-size:1.2em;font-weight:bold;">{{Aucun équipement trouvé, cliquez sur "Ajouter" pour commencer}}</div>';
+        } else {
+            echo '<div class="input-group" style="margin:5px;">';
+            echo '<input class="form-control roundedLeft" placeholder="{{Rechercher}}" id="in_searchEqlogic">';
+            echo '<div class="input-group-btn">';
+            echo '<a id="bt_resetSearch" class="btn" style="width:30px"><i class="fas fa-times"></i></a>';
+            echo '<a class="btn roundedRight hidden" id="bt_pluginDisplayAsTable" data-coreSupport="1" data-state="0"><i class="fas fa-grip-lines"></i></a>';
+            echo '</div>';
+            echo '</div>';
+
+            echo '<div class="eqLogicThumbnailContainer">';
             foreach ($eqLogics as $eqLogic) {
                 $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
                 echo '<div class="eqLogicDisplayCard cursor ' . $opacity . '" data-eqLogic_id="' . $eqLogic->getId() . '">';
-                echo '<img src="' . $eqLogic->getImage() . '" style="max-height: 95px"/>';
-                echo "<br>";
+                echo '<img src="' . $eqLogic->getImage() . '"/>';
+                echo '<br>';
                 echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
+                echo '<span class="hiddenAsCard displayTableRight hidden">';
+                echo ($eqLogic->getIsVisible() == 1) ? '<i class="fas fa-eye" title="{{Equipement visible}}"></i>' : '<i class="fas fa-eye-slash" title="{{Equipement non visible}}"></i>';
+                echo '</span>';
                 echo '</div>';
             }
-            ?>
-        </div>
+            echo '</div>';
+        }
+        ?>
     </div>
 
     <div class="col-xs-12 eqLogic" style="display: none;">
@@ -68,11 +77,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
         </ul>
         <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
             <div role="tabpanel" class="tab-pane active" id="eqlogictab">
-                <br />
-                <div class="row">
-                    <div class="col-sm-7">
-                        <form class="form-horizontal">
-                            <fieldset>
+                <form class="form-horizontal">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <legend><i class="fas fa-wrench"></i> {{Paramètres généraux}}</legend>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">{{Nom de l'équipement}}</label>
                                     <div class="col-sm-3">
@@ -108,13 +117,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label"></label>
+                                    <label class="col-sm-3 control-label">{{Options}}</label>
                                     <div class="col-sm-9">
                                         <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" />{{Activer}}</label>
                                         <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" />{{Visible}}</label>
                                     </div>
                                 </div>
-                                <br />
+
+                                <legend><i class="fas fa-cogs"></i> {{Paramètres spécifiques}}</legend>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">{{Hôte}}</label>
                                     <div class="col-sm-6">
@@ -125,22 +135,21 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         </div>
                                     </div>
                                 </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                    <div class="col-sm-5">
-                        <form class="form-horizontal">
-                            <fieldset>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label"></label>
-                                    <div class="col-sm-8">
 
+
+                            </div>
+                            <div class="col-lg-4">
+                                <legend><i class="fas fa-info"></i> {{Informations}}</legend>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{{Description}}</label>
+                                    <div class="col-sm-9">
+                                        <textarea class="form-control eqLogicAttr autogrow" data-l1key="comment"></textarea>
                                     </div>
                                 </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
             </div>
             <div role="tabpanel" class="tab-pane" id="commandtab">
                 <a id="bt_createCommands" class="btn btn-default btn-sm pull-right"><i class="fas fa-plus-circle"></i> {{Créer les commandes manquantes}}</a>
