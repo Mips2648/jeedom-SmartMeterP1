@@ -209,10 +209,14 @@ class SmartMeterP1 extends eqLogic {
 					"72.7.0",	// voltage 3
 					"31.7.0",	// intensity 1
 					"51.7.0",	// intensity 1
-					"71.7.0"	// intensity 1
+					"71.7.0",	// intensity 1
+					"21.7.0",	// Power 1
+					"41.7.0",	// Power 2
+					"61.7.0",	// Power 3
 				];
 				$fullregex = '/\d\-\d:(\d+\.\d+\.\d+)\((\d+\.\d{1,3})\*([VAkWh]+){1,3}\)/';
 				$coderegex = '/\d\-\d:(\d+\.\d+\.\d+)\((.*)\)/';
+				$coderegex2 = '/\d\-\d:(\d+\.\d+\.\d+)\((.*)\)\((\d+\.\d{1,3})\*([VAkWh]+){1,3}\)/';
 				$results = [];
 
 				if ($flagHomewizard) {
@@ -239,6 +243,21 @@ class SmartMeterP1 extends eqLogic {
 							$results[$current_code] = $value;
 						} else {
 							//log::add(__CLASS__, 'debug', "Unknown code {$current_code}");
+						}
+					} elseif (preg_match($coderegex2, $data, $matches) === 1) {
+						$current_code = $matches[1];
+						$c_date = $matches[2];
+						$current_value = $matches[3];
+
+						switch ($current_code) {
+							case '1.6.0':
+								$this->checkAndUpdateCmd($current_code, $current_value);
+								$current_date = substr($c_date, 4, 2) . '/' . substr($c_date, 2, 2) . '/' . substr($c_date, 0, 2) . '  ' . substr($c_date, 6, 2) . ':' . substr($c_date, 8, 2) . ':' . substr($c_date, 10, 2);
+								$this->checkAndUpdateCmd($current_code . 'd', $current_date);
+								break;
+							default:
+								//log::add(__CLASS__, 'debug', "additional unused data(2): {$current_code}={$current_data}");
+								break;
 						}
 					} elseif (preg_match($coderegex, $data, $matches) === 1) {
 						$current_code = $matches[1];
