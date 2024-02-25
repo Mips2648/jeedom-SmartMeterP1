@@ -249,7 +249,7 @@ class SmartMeterP1 extends eqLogic {
 								$this->checkAndUpdateCmd($code, $data);
 								break;
 							case '96.14.0': // day/night
-								$this->checkAndUpdateCmd($code, $data == '0001');
+								$this->checkAndUpdateCmd($code, (int)($data == '0001'));
 								break;
 							case '96.13.0': // message and last code from the run
 								if ($data != '') {
