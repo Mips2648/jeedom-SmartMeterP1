@@ -125,6 +125,18 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 </div>
 
                                 <legend><i class="fas fa-cogs"></i> {{Paramètres spécifiques}}</legend>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{{Type de passerelle}}</label>
+                                    <div class="col-sm-3">
+                                        <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="gatewayType">
+                                            <option value="">{{Sélectionnez une option}}</option>
+                                            <option value="domohab">{{DomoHab}}</option>
+                                            <option value="homewizard">{{Home wizard}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">{{Hôte}}</label>
                                     <div class="col-sm-6">
@@ -133,13 +145,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                             <span class="input-group-addon">:</span>
                                             <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="port" placeholder="8088" />
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">{{Type}}</label>
-                                    <div class="col-sm-6">
-                                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="flagHomewizard" />Homewizard P1</label>
                                     </div>
                                 </div>
 
