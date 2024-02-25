@@ -284,6 +284,96 @@
             "initialValue": 0
         },
         {
+            "logicalId": "21.7.0",
+            "name": "Puissance prélevée phase 1",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "41.7.0",
+            "name": "Puissance prélevée phase 2",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "61.7.0",
+            "name": "Puissance prélevée phase 3",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "22.7.0",
+            "name": "Puissance injectée phase 1",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "42.7.0",
+            "name": "Puissance injectée phase 2",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "62.7.0",
+            "name": "Puissance injectée phase 3",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
             "logicalId": "96.1.1",
             "name": "Numéro de série",
             "type": "info",
