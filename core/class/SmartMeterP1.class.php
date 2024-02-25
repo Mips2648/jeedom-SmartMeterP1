@@ -184,12 +184,12 @@ class SmartMeterP1 extends eqLogic {
 		try {
 			if ($flagHomewizard) {
 				$url = "http://{$host}/api/v1/telegram";
-   				$curl = curl_init($url);
-   				curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-   				$f = curl_exec($curl);
-   				curl_close($curl);
-   			} else {
-   				$f = fsockopen($host, $port, $cfgTimeOut);
+				$curl = curl_init($url);
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+				$f = curl_exec($curl);
+				curl_close($curl);
+			} else {
+				$f = fsockopen($host, $port, $cfgTimeOut);
 			}
 
 			if (!$f) {
@@ -228,7 +228,7 @@ class SmartMeterP1 extends eqLogic {
 					}
 				}
 
-				foreach($fa as $data) {
+				foreach ($fa as $data) {
 					$matches = [];
 					if (preg_match($fullregex, $data, $matches) === 1) {
 						$current_code = $matches[1];
@@ -289,7 +289,7 @@ class SmartMeterP1 extends eqLogic {
 								break;
 						}
 					} else {
-					 	//log::add(__CLASS__, 'debug', "cannot extract actual code & value from raw data: {$data}");
+						//log::add(__CLASS__, 'debug', "cannot extract actual code & value from raw data: {$data}");
 					}
 				}
 			}
@@ -301,7 +301,6 @@ class SmartMeterP1 extends eqLogic {
 				fclose($f);
 			}
 		}
-
 	}
 
 	private static function getTopicPrefix() {
