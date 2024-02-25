@@ -154,8 +154,8 @@ class SmartMeterP1 extends eqLogic {
 
 			$date = new DateTime();
 			$lastDay = $date->format('Y-m-t');
-			$toDay = $date->format('Y-m-d');
-			if ($lastDay === $toDay) {
+			$today = $date->format('Y-m-d');
+			if ($lastDay === $today) {
 				/** @var SmartMeterP1Cmd */
 				$monthImport = $eqLogic->getCmd('info', 'monthImport');
 				if (is_object($monthImport)) {
