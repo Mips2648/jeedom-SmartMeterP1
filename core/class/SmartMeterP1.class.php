@@ -6,10 +6,8 @@ require_once dirname(__FILE__) . '/../../vendor/autoload.php';
 class SmartMeterP1 extends eqLogic {
 	use MipsEqLogicTrait;
 
-	/**
-	 * @return cron
-	 */
 	public static function setDaemon() {
+		/** @var cron */
 		$cron = cron::byClassAndFunction(__CLASS__, 'daemon');
 		if (!is_object($cron)) {
 			$cron = new cron();
@@ -25,10 +23,8 @@ class SmartMeterP1 extends eqLogic {
 		return $cron;
 	}
 
-	/**
-	 * @return cron
-	 */
 	private static function getDaemonCron() {
+		/** @var cron */
 		$cron = cron::byClassAndFunction(__CLASS__, 'daemon');
 		if (!is_object($cron)) {
 			return self::setDaemon();
@@ -306,12 +302,6 @@ class SmartMeterP1 extends eqLogic {
 
 	public function postInsert() {
 		$this->createCommands();
-	}
-
-	public function postSave() {
-		// $host = $this->getConfiguration('host');
-		// if ($host == '') return;
-
 	}
 }
 
