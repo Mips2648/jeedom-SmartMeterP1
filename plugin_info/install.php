@@ -51,4 +51,13 @@ function SmartMeterP1_update() {
 }
 
 function SmartMeterP1_remove() {
+    try {
+        $crons = cron::searchClassAndFunction('SmartMeterP1', 'dailyReset');
+        if (is_array($crons)) {
+            foreach ($crons as $cron) {
+                $cron->remove();
+            }
+        }
+    } catch (Exception $e) {
+    }
 }
