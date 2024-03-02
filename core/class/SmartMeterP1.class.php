@@ -267,6 +267,7 @@ class SmartMeterP1 extends eqLogic {
 								$this->checkAndUpdateCmd('totalImport', $results['1.8.1'] + $results['1.8.2']);
 								$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
 								$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
+								log::add(__CLASS__, 'info', "Successfuly refreshed all values of {$this->getName()} ({$host}:{$port})");
 								break 2; // break from switch & while because last code from the run
 							default:
 								log::add(__CLASS__, 'warning', "Unknown data: {$code}={$data}");
@@ -283,7 +284,6 @@ class SmartMeterP1 extends eqLogic {
 			log::add(__CLASS__, 'debug', "Closing connection to {$this->getName()} ({$host}:{$port})");
 			fclose($f);
 		}
-		log::add(__CLASS__, 'info', "Successfuly refreshed values of {$this->getName()} ({$host}:{$port})");
 	}
 
 	private static function getTopicPrefix() {
