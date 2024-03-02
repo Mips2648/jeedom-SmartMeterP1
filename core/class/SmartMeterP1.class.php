@@ -57,6 +57,11 @@ class SmartMeterP1 extends eqLogic {
 	public static function deamon_stop() {
 		$cron = self::getDaemonCron();
 		$cron->halt();
+
+		/** @var SmartMeterP1 */
+		foreach (self::byType(__CLASS__, true) as $eqLogic) {
+			$eqLogic->setStatusCmd(0);
+		}
 	}
 
 	public static function deamon_changeAutoMode($_mode) {
@@ -166,6 +171,13 @@ class SmartMeterP1 extends eqLogic {
 		}
 	}
 
+	private function setStatusCmd(int $value) {
+		/** @var cmd */
+		$statusCmd = $this->getCmd('info', 'status');
+		if (!is_object($statusCmd)) return;
+		$statusCmd->event($value);
+	}
+
 	private function refreshP1() {
 		$host = $this->getConfiguration('host');
 		if ($host == '') return;
@@ -177,11 +189,12 @@ class SmartMeterP1 extends eqLogic {
 
 		try {
 			$f = fsockopen($host, $port, $cfgTimeOut);
-
 			if (!$f) {
 				log::add(__CLASS__, 'error', "Cannot connect to {$this->getName()} ({$host}:{$port})");
+				$this->setStatusCmd(0);
 			} else {
 				log::add(__CLASS__, 'debug', "Connected to {$this->getName()} ({$host}:{$port})");
+				$this->setStatusCmd(1);
 
 				$codes = [
 					"1.8.1",	// import high
@@ -295,7 +308,11 @@ class SmartMeterP1 extends eqLogic {
 	public function createCommands() {
 		log::add(__CLASS__, 'debug', "Checking commands of {$this->getName()}");
 
-		$this->createCommandsFromConfigFile(__DIR__ . '/../config/p1.json', 'p1');
+		$commands = self::getCommandsFileContent(__DIR__ . '/../config/p1.json');
+
+		$this->createCommandsFromConfig($commands['p1']);
+		$this->createCommandsFromConfig($commands['totals']);
+		$this->createCommandsFromConfig($commands['meta']);
 
 		return $this;
 	}
