@@ -6,10 +6,8 @@ require_once dirname(__FILE__) . '/../../vendor/autoload.php';
 class SmartMeterP1 extends eqLogic {
 	use MipsEqLogicTrait;
 
-	/**
-	 * @return cron
-	 */
 	public static function setDaemon() {
+		/** @var cron */
 		$cron = cron::byClassAndFunction(__CLASS__, 'daemon');
 		if (!is_object($cron)) {
 			$cron = new cron();
@@ -25,10 +23,8 @@ class SmartMeterP1 extends eqLogic {
 		return $cron;
 	}
 
-	/**
-	 * @return cron
-	 */
 	private static function getDaemonCron() {
+		/** @var cron */
 		$cron = cron::byClassAndFunction(__CLASS__, 'daemon');
 		if (!is_object($cron)) {
 			return self::setDaemon();
@@ -61,6 +57,11 @@ class SmartMeterP1 extends eqLogic {
 	public static function deamon_stop() {
 		$cron = self::getDaemonCron();
 		$cron->halt();
+
+		/** @var SmartMeterP1 */
+		foreach (self::byType(__CLASS__, true) as $eqLogic) {
+			$eqLogic->setStatusCmd(0);
+		}
 	}
 
 	public static function deamon_changeAutoMode($_mode) {
@@ -154,8 +155,8 @@ class SmartMeterP1 extends eqLogic {
 
 			$date = new DateTime();
 			$lastDay = $date->format('Y-m-t');
-			$toDay = $date->format('Y-m-d');
-			if ($lastDay === $toDay) {
+			$today = $date->format('Y-m-d');
+			if ($lastDay === $today) {
 				/** @var SmartMeterP1Cmd */
 				$monthImport = $eqLogic->getCmd('info', 'monthImport');
 				if (is_object($monthImport)) {
@@ -170,6 +171,13 @@ class SmartMeterP1 extends eqLogic {
 		}
 	}
 
+	private function setStatusCmd(int $value) {
+		/** @var cmd */
+		$statusCmd = $this->getCmd('info', 'status');
+		if (!is_object($statusCmd)) return;
+		$statusCmd->event($value);
+	}
+
 	private function refreshP1() {
 		$host = $this->getConfiguration('host');
 		if ($host == '') return;
@@ -181,11 +189,12 @@ class SmartMeterP1 extends eqLogic {
 
 		try {
 			$f = fsockopen($host, $port, $cfgTimeOut);
-
 			if (!$f) {
-				log::add(__CLASS__, 'warning', "Cannot connect to {$this->getName()} ({$host}:{$port})");
+				log::add(__CLASS__, 'error', "Cannot connect to {$this->getName()} ({$host}:{$port})");
+				$this->setStatusCmd(0);
 			} else {
-				log::add(__CLASS__, 'info', "Connected to {$this->getName()} ({$host}:{$port})");
+				log::add(__CLASS__, 'debug', "Connected to {$this->getName()} ({$host}:{$port})");
+				$this->setStatusCmd(1);
 
 				$codes = [
 					"1.8.1",	// import high
@@ -199,65 +208,80 @@ class SmartMeterP1 extends eqLogic {
 					"72.7.0",	// voltage 3
 					"31.7.0",	// intensity 1
 					"51.7.0",	// intensity 1
-					"71.7.0"	// intensity 1
+					"71.7.0",	// intensity 1
+					"21.7.0",	// import power 1
+					"41.7.0",	// import power 2
+					"61.7.0",	// import power 3
+					"22.7.0",	// export power 1
+					"42.7.0",	// export power 2
+					"62.7.0"	// export power 3
+				];
+				$unused_codes = [
+					"1.4.0", // power last quarter; not used in plugin
+					"17.0.0" // power limit for client with pre-paid contract; not used in plugin
 				];
 				$fullregex = '/\d\-\d:(\d+\.\d+\.\d+)\((\d+\.\d{1,3})\*([VAkWh]+){1,3}\)/';
 				$coderegex = '/\d\-\d:(\d+\.\d+\.\d+)\((.*)\)/';
 				$results = [];
-				while (($data =  fgets($f, 4096)) !== false) {
+				while (($line =  fgets($f, 4096)) !== false) {
+					$line = trim($line);
+					if (empty($line)) continue;
+					log::add(__CLASS__, 'debug', "Parse: {$line}");
 					$matches = [];
-					if (preg_match($fullregex, $data, $matches) === 1) {
-						$current_code = $matches[1];
-						if (in_array($current_code, $codes)) {
+					if (preg_match($fullregex, $line, $matches) === 1) {
+						$code = $matches[1];
+						if (in_array($code, $codes)) {
 							$value = $matches[2];
 							$unit = $matches[3];
-							// log::add(__CLASS__, 'debug', "{$current_code}: {$value} {$unit}");
 							if ($unit === 'kW') {
 								$value *= 1000;
 							}
-							$this->checkAndUpdateCmd($current_code, $value);
-							$results[$current_code] = $value;
-						} else {
-							// log::add(__CLASS__, 'debug', "Unknown code {$current_code}");
+							$this->checkAndUpdateCmd($code, $value);
+							$results[$code] = $value;
+						} elseif (!in_array($code, $unused_codes)) {
+							log::add(__CLASS__, 'warning', "Unknown code {$code}: {$line}");
 						}
-					} elseif (preg_match($coderegex, $data, $matches) === 1) {
-						$current_code = $matches[1];
-						$current_data = $matches[2];
+					} elseif (preg_match($coderegex, $line, $matches) === 1) {
+						$code = $matches[1];
+						$data = $matches[2];
 
-						switch ($current_code) {
-							case '1.0.0':
-								// datetime; ex:'240118094756W' => 24/01/18 09:47:56
+						switch ($code) {
+							case '1.0.0': // datetime; ex:'240118094756W' => 24/01/18 09:47:56
+							case '1.6.0': // max power / quarter this month
+							case '31.4.0': // current limit
+							case '96.3.10': // breaker state?
+							case '98.1.0':
 								// not usefull
 								break;
 							case '96.1.1': // serial number
 							case '96.1.4': // id
-								$this->checkAndUpdateCmd($current_code, $current_data);
+								$this->checkAndUpdateCmd($code, $data);
 								break;
 							case '96.14.0': // day/night
-								$this->checkAndUpdateCmd($current_code, $current_data == '0001');
+								$this->checkAndUpdateCmd($code, (int)($data == '0001'));
 								break;
 							case '96.13.0': // message and last code from the run
-								if ($current_data != '') {
-									log::add(__CLASS__, 'info', "Message received: {$current_code}={$current_data}");
+								if ($data != '') {
+									log::add(__CLASS__, 'info', "Message received: {$code}={$data}");
 								}
 								$this->checkAndUpdateCmd('totalImport', $results['1.8.1'] + $results['1.8.2']);
 								$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
 								$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
-								// log::add(__CLASS__, 'debug', "============");
+								log::add(__CLASS__, 'info', "Successfuly refreshed all values of {$this->getName()} ({$host}:{$port})");
 								break 2; // break from switch & while because last code from the run
 							default:
-								log::add(__CLASS__, 'debug', "additional unused data: {$current_code}={$current_data}");
+								log::add(__CLASS__, 'warning', "Unknown data: {$code}={$data}");
 								break;
 						}
 					} else {
-						// log::add(__CLASS__, 'debug', "cannot extract actual code & value from raw data: {$data}");
+						// log::add(__CLASS__, 'debug', "cannot extract actual code & value from raw data: {$line}");
 					}
 				}
 			}
 		} catch (\Throwable $th) {
 			log::add(__CLASS__, 'error', "Error with {$this->getName()} ({$host}:{$port}): {$th->getMessage()}");
 		} finally {
-			log::add(__CLASS__, 'info', "Closing connection to {$this->getName()} ({$host}:{$port})");
+			log::add(__CLASS__, 'debug', "Closing connection to {$this->getName()} ({$host}:{$port})");
 			fclose($f);
 		}
 	}
@@ -281,22 +305,20 @@ class SmartMeterP1 extends eqLogic {
 		}
 	}
 
-	public function createCommands($syncValues = false) {
+	public function createCommands() {
 		log::add(__CLASS__, 'debug', "Checking commands of {$this->getName()}");
 
-		$this->createCommandsFromConfigFile(__DIR__ . '/../config/p1.json', 'p1');
+		$commands = self::getCommandsFileContent(__DIR__ . '/../config/p1.json');
+
+		$this->createCommandsFromConfig($commands['p1']);
+		$this->createCommandsFromConfig($commands['totals']);
+		$this->createCommandsFromConfig($commands['meta']);
 
 		return $this;
 	}
 
 	public function postInsert() {
 		$this->createCommands();
-	}
-
-	public function postSave() {
-		// $host = $this->getConfiguration('host');
-		// if ($host == '') return;
-
 	}
 }
 

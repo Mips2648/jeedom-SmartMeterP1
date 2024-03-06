@@ -61,93 +61,6 @@
             "initialValue": 0
         },
         {
-            "logicalId": "totalImport",
-            "name": "Prélèvement total",
-            "type": "info",
-            "subtype": "numeric",
-            "generic_type": "CONSUMPTION",
-            "isVisible": 1,
-            "isHistorized": 0,
-            "unite": "kWh",
-            "template": {
-                "dashboard": "tile",
-                "mobile": "line"
-            },
-            "initialValue": 0
-        },
-        {
-            "logicalId": "dayImport",
-            "name": "Prélèvement jour",
-            "type": "info",
-            "subtype": "numeric",
-            "generic_type": "CONSUMPTION",
-            "isVisible": 1,
-            "isHistorized": 0,
-            "unite": "kWh",
-            "template": {
-                "dashboard": "line",
-                "mobile": "line"
-            },
-            "initialValue": 0
-        },
-        {
-            "logicalId": "monthImport",
-            "name": "Prélèvement mois",
-            "type": "info",
-            "subtype": "numeric",
-            "generic_type": "CONSUMPTION",
-            "isVisible": 1,
-            "isHistorized": 0,
-            "unite": "kWh",
-            "template": {
-                "dashboard": "line",
-                "mobile": "line"
-            },
-            "initialValue": 0
-        },
-        {
-            "logicalId": "totalExport",
-            "name": "Injection total",
-            "type": "info",
-            "subtype": "numeric",
-            "isVisible": 1,
-            "isHistorized": 0,
-            "unite": "kWh",
-            "template": {
-                "dashboard": "tile",
-                "mobile": "line"
-            },
-            "initialValue": 0
-        },
-        {
-            "logicalId": "dayExport",
-            "name": "Injection jour",
-            "type": "info",
-            "subtype": "numeric",
-            "isVisible": 1,
-            "isHistorized": 0,
-            "unite": "kWh",
-            "template": {
-                "dashboard": "line",
-                "mobile": "line"
-            },
-            "initialValue": 0
-        },
-        {
-            "logicalId": "monthExport",
-            "name": "Injection mois",
-            "type": "info",
-            "subtype": "numeric",
-            "isVisible": 1,
-            "isHistorized": 0,
-            "unite": "kWh",
-            "template": {
-                "dashboard": "line",
-                "mobile": "line"
-            },
-            "initialValue": 0
-        },
-        {
             "logicalId": "1.7.0",
             "name": "Puissance prélevée",
             "type": "info",
@@ -174,25 +87,6 @@
             "template": {
                 "dashboard": "tile",
                 "mobile": "line"
-            },
-            "initialValue": 0
-        },
-        {
-            "logicalId": "Import-Export",
-            "name": "Puissance nette",
-            "type": "info",
-            "subtype": "numeric",
-            "generic_type": "POWER",
-            "isVisible": 1,
-            "isHistorized": 1,
-            "unite": "W",
-            "template": {
-                "dashboard": "tile",
-                "mobile": "line"
-            },
-            "configuration": {
-                "minValue": -10000,
-                "maxValue": 10000
             },
             "initialValue": 0
         },
@@ -284,6 +178,96 @@
             "initialValue": 0
         },
         {
+            "logicalId": "21.7.0",
+            "name": "Puissance prélevée phase 1",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "41.7.0",
+            "name": "Puissance prélevée phase 2",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "61.7.0",
+            "name": "Puissance prélevée phase 3",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "22.7.0",
+            "name": "Puissance injectée phase 1",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "42.7.0",
+            "name": "Puissance injectée phase 2",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "62.7.0",
+            "name": "Puissance injectée phase 3",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
             "logicalId": "96.1.1",
             "name": "Numéro de série",
             "type": "info",
@@ -319,6 +303,125 @@
                 "mobile": "line"
             },
             "initialValue": 1
+        }
+    ],
+    "totals": [
+        {
+            "logicalId": "totalImport",
+            "name": "Prélèvement total",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "CONSUMPTION",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "dayImport",
+            "name": "Prélèvement jour",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "CONSUMPTION",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "monthImport",
+            "name": "Prélèvement mois",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "CONSUMPTION",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "totalExport",
+            "name": "Injection total",
+            "type": "info",
+            "subtype": "numeric",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "dayExport",
+            "name": "Injection jour",
+            "type": "info",
+            "subtype": "numeric",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "monthExport",
+            "name": "Injection mois",
+            "type": "info",
+            "subtype": "numeric",
+            "isVisible": 1,
+            "isHistorized": 0,
+            "unite": "kWh",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "Import-Export",
+            "name": "Puissance nette",
+            "type": "info",
+            "subtype": "numeric",
+            "generic_type": "POWER",
+            "isVisible": 1,
+            "isHistorized": 1,
+            "unite": "W",
+            "template": {
+                "dashboard": "tile",
+                "mobile": "line"
+            },
+            "configuration": {
+                "minValue": -10000,
+                "maxValue": 10000
+            },
+            "initialValue": 0
+        }
+    ],
+    "meta": [
+        {
+            "logicalId": "status",
+            "name": "Statut",
+            "type": "info",
+            "subtype": "binary",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "initialValue": 0
         }
     ]
 }

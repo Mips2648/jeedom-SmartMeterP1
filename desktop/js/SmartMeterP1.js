@@ -9,7 +9,7 @@ function addCmdToTable(_cmd) {
     if (!isset(_cmd.configuration)) {
         _cmd.configuration = {};
     }
-    var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">';
+    let tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">';
 
     tr += '<td>';
     tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
@@ -58,7 +58,7 @@ function addCmdToTable(_cmd) {
     $tr.setValues(_cmd, '.cmdAttr');
     jeedom.cmd.changeType($tr, init(_cmd.subType));
 
-    $tr.find('.cmdAttr[data-l1key=type],.cmdAttr[data-l1key=subType]').prop("disabled", true);
+    $tr.find('.cmdAttr[data-l1key=type]').prop("disabled", true);
 }
 
 $("#table_cmd").sortable({ axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true });
