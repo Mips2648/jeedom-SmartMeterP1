@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '22f103546aff6ad82e85802b4ba3304e93d59875',
+    'reference' => '869b542e1428a6010501933fdcfed7bed94b4bbb',
     'name' => 'mips/jeedom-smartmeterp1',
   ),
   'versions' => 
@@ -18,16 +18,16 @@
       'aliases' => 
       array (
       ),
-      'reference' => '22f103546aff6ad82e85802b4ba3304e93d59875',
+      'reference' => '869b542e1428a6010501933fdcfed7bed94b4bbb',
     ),
     'mips/jeedom-tools' => 
     array (
-      'pretty_version' => 'v0.23',
-      'version' => '0.23.0.0',
+      'pretty_version' => 'v1.0',
+      'version' => '1.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'cc1805a0953ce58415f9e828cd2defacc1bf362d',
+      'reference' => '047aa5ca7831394566a6974ea7ccc882c04025c8',
     ),
   ),
 );
