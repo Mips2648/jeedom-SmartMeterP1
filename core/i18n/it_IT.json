@@ -59,6 +59,7 @@
         "401 - Accès non autorisé": "401 - Accesso non autorizzato",
         "Actions": "Stock",
         "Activer": "Attivare",
+        "Ajouter": "Aggiungi",
         "Aucun": "Nessuno",
         "Aucun équipement trouvé, cliquez sur \"Ajouter\" pour commencer": "Nessuna apparecchiatura trovata, fare clic su \"Aggiungi\" per iniziare",
         "Catégorie": "Categoria",
@@ -83,6 +84,8 @@
         "Paramètres généraux": "Parametri generali",
         "Paramètres spécifiques": "Parametri specifici",
         "Rechercher": "Ricercare",
+        "Sauvegarder": "Risparmiare",
+        "Supprimer": "Cancellare",
         "Type": "Tipo",
         "Visible": "Visibile"
     },
