@@ -13,6 +13,9 @@
 	"licence": "AGPL",
 	"author": "Mips",
 	"require": "4.4",
+	"os": {
+		"min": 11
+	},
 	"category": "energy",
 	"hasDependency": false,
 	"hasOwnDeamon": true,
