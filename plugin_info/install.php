@@ -18,15 +18,16 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
-function InstallComposerDependencies(string $pluginId) {
+function InstallComposerDependencies() {
+    $pluginId = basename(realpath(__DIR__ . '/..'));
     log::add($pluginId, 'info', 'Install composer dependencies');
     $cmd = 'cd ' . __DIR__ . '/../;export COMPOSER_ALLOW_SUPERUSER=1;export COMPOSER_HOME="/tmp/composer";' . system::getCmdSudo() . 'composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader;' . system::getCmdSudo() . ' chown -R www-data:www-data *';
     shell_exec($cmd);
 }
 
 function SmartMeterP1_install() {
-    $pluginId = 'SmartMeterP1';
-    InstallComposerDependencies($pluginId);
+    $pluginId = basename(realpath(__DIR__ . '/..'));
+    InstallComposerDependencies();
 
     SmartMeterP1::setDaemon();
 
@@ -44,8 +45,8 @@ function SmartMeterP1_install() {
 }
 
 function SmartMeterP1_update() {
-    $pluginId = 'SmartMeterP1';
-    InstallComposerDependencies($pluginId);
+    $pluginId = basename(realpath(__DIR__ . '/..'));
+    InstallComposerDependencies();
 
     SmartMeterP1::setDaemon();
 
@@ -63,7 +64,7 @@ function SmartMeterP1_update() {
 }
 
 function SmartMeterP1_remove() {
-    $pluginId = 'SmartMeterP1';
+    $pluginId = basename(realpath(__DIR__ . '/..'));
     try {
         $crons = cron::searchClassAndFunction($pluginId, 'dailyReset');
         if (is_array($crons)) {
