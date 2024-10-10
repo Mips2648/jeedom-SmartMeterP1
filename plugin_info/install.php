@@ -18,13 +18,22 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
+function InstallComposerDependencies(string $pluginId) {
+    log::add($pluginId, 'info', 'Install composer dependencies');
+    $cmd = 'cd ' . __DIR__ . '/../;export COMPOSER_ALLOW_SUPERUSER=1;export COMPOSER_HOME="/tmp/composer";' . system::getCmdSudo() . 'composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader;' . system::getCmdSudo() . ' chown -R www-data:www-data *';
+    shell_exec($cmd);
+}
+
 function SmartMeterP1_install() {
+    $pluginId = 'SmartMeterP1';
+    InstallComposerDependencies($pluginId);
+
     SmartMeterP1::setDaemon();
 
-    $cron = cron::byClassAndFunction('SmartMeterP1', 'dailyReset');
+    $cron = cron::byClassAndFunction($pluginId, 'dailyReset');
     if (!is_object($cron)) {
         $cron = new cron();
-        $cron->setClass('SmartMeterP1');
+        $cron->setClass($pluginId);
         $cron->setFunction('dailyReset');
     }
     $cron->setEnable(1);
@@ -35,12 +44,15 @@ function SmartMeterP1_install() {
 }
 
 function SmartMeterP1_update() {
+    $pluginId = 'SmartMeterP1';
+    InstallComposerDependencies($pluginId);
+
     SmartMeterP1::setDaemon();
 
-    $cron = cron::byClassAndFunction('SmartMeterP1', 'dailyReset');
+    $cron = cron::byClassAndFunction($pluginId, 'dailyReset');
     if (!is_object($cron)) {
         $cron = new cron();
-        $cron->setClass('SmartMeterP1');
+        $cron->setClass($pluginId);
         $cron->setFunction('dailyReset');
     }
     $cron->setEnable(1);
@@ -51,8 +63,9 @@ function SmartMeterP1_update() {
 }
 
 function SmartMeterP1_remove() {
+    $pluginId = 'SmartMeterP1';
     try {
-        $crons = cron::searchClassAndFunction('SmartMeterP1', 'dailyReset');
+        $crons = cron::searchClassAndFunction($pluginId, 'dailyReset');
         if (is_array($crons)) {
             foreach ($crons as $cron) {
                 $cron->remove();
