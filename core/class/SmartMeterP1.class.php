@@ -226,7 +226,17 @@ class SmartMeterP1 extends eqLogic {
 				while (($line =  fgets($f, 4096)) !== false) {
 					$line = trim($line);
 					if (empty($line)) continue;
+
 					log::add(__CLASS__, 'debug', "Parse: {$line}");
+
+					if ($line[0] === '!') {
+						$this->checkAndUpdateCmd('totalImport', $results['1.8.1'] + $results['1.8.2']);
+						$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
+						$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
+						log::add(__CLASS__, 'info', "Successfuly refreshed all values of {$this->getName()} ({$host}:{$port})");
+						break;
+					}
+
 					$matches = [];
 					if (preg_match($fullregex, $line, $matches) === 1) {
 						$code = $matches[1];
@@ -260,15 +270,11 @@ class SmartMeterP1 extends eqLogic {
 							case '96.14.0': // day/night
 								$this->checkAndUpdateCmd($code, (int)($data == '0001'));
 								break;
-							case '96.13.0': // message and last code from the run
+							case '96.13.0': // message
 								if ($data != '') {
 									log::add(__CLASS__, 'info', "Message received: {$code}={$data}");
 								}
-								$this->checkAndUpdateCmd('totalImport', $results['1.8.1'] + $results['1.8.2']);
-								$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
-								$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
-								log::add(__CLASS__, 'info', "Successfuly refreshed all values of {$this->getName()} ({$host}:{$port})");
-								break 2; // break from switch & while because last code from the run
+								break;
 							default:
 								log::add(__CLASS__, 'warning', "Unknown data: {$code}={$data}");
 								break;
