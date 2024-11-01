@@ -415,6 +415,36 @@
     ],
     "meta": [
         {
+            "logicalId": "connect",
+            "name": "On",
+            "type": "action",
+            "subtype": "other",
+            "isVisible": 1,
+            "value": "status",
+            "display": {
+                "icon": "<i class=\"fas fa-link\"><\/i>"
+            },
+            "template": {
+                "dashboard": "core::binarySwitch",
+                "mobile": "core::binarySwitch"
+            }
+        },
+        {
+            "logicalId": "disconnect",
+            "name": "Off",
+            "type": "action",
+            "subtype": "other",
+            "isVisible": 1,
+            "value": "status",
+            "display": {
+                "icon": "<i class=\"fas fa-unlink\"><\/i>"
+            },
+            "template": {
+                "dashboard": "core::binarySwitch",
+                "mobile": "core::binarySwitch"
+            }
+        },
+        {
             "logicalId": "status",
             "name": "{{Statut}}",
             "type": "info",

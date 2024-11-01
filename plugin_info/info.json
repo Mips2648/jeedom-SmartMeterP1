@@ -17,7 +17,7 @@
 		"min": 11
 	},
 	"category": "energy",
-	"hasDependency": false,
+	"hasDependency": true,
 	"hasOwnDeamon": true,
 	"maxDependancyInstallTime": 30,
 	"changelog": "https://mips2648.github.io/jeedom-plugins-docs/SmartMeterP1/#language#/changelog",

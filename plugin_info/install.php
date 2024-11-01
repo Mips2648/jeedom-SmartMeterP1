@@ -25,11 +25,12 @@ function InstallComposerDependencies() {
     shell_exec($cmd);
 }
 
+function SmartMeterP1_post_market_install() {
+    InstallComposerDependencies();
+}
+
 function SmartMeterP1_install() {
     $pluginId = basename(realpath(__DIR__ . '/..'));
-    InstallComposerDependencies();
-
-    SmartMeterP1::setDaemon();
 
     $cron = cron::byClassAndFunction($pluginId, 'dailyReset');
     if (!is_object($cron)) {
@@ -46,9 +47,6 @@ function SmartMeterP1_install() {
 
 function SmartMeterP1_update() {
     $pluginId = basename(realpath(__DIR__ . '/..'));
-    InstallComposerDependencies();
-
-    SmartMeterP1::setDaemon();
 
     $cron = cron::byClassAndFunction($pluginId, 'dailyReset');
     if (!is_object($cron)) {
@@ -61,6 +59,16 @@ function SmartMeterP1_update() {
     $cron->setSchedule('59 23 * * *');
     $cron->setTimeout(10);
     $cron->save();
+
+    /** @var SmartMeterP1 */
+    foreach (eqLogic::byType($pluginId) as $eqLogic) {
+        if ($eqLogic->getLogicalId() == '' && $eqLogic->getConfiguration('host') != '') {
+            $eqLogic->setLogicalId($eqLogic->getConfiguration('host'));
+            $eqLogic->setConfiguration('host', null);
+            $eqLogic->save(true);
+        }
+        $eqLogic->createCommands();
+    }
 }
 
 function SmartMeterP1_remove() {
