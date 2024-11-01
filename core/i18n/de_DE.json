@@ -6,9 +6,9 @@
         "eqLogic non trouvé : ": "eqLogic nicht gefunden :"
     },
     "plugins\/SmartMeterP1\/core\/class\/SmartMeterP1.class.php": {
-        "Le plugin mqtt2 n\\'est pas installé": "Das Plugin mqtt2 ist nicht installiert",
-        "Une erreur s\\'est produite dans le plugin mqtt2:": "Im Plugin mqtt2 ist ein Fehler aufgetreten:",
-        "Veuillez vérifier la configuration": "Bitte überprüfen Sie die Konfiguration"
+        "Impossible de lancer le démon": "Der Dämon kann nicht gestartet werden",
+        "Veuillez vérifier la configuration": "Bitte überprüfen Sie die Konfiguration",
+        "Vous devez saisir une adresse IP pour activer l'équipement": "Sie müssen eine IP-Adresse eingeben, um das Gerät zu aktivieren"
     },
     "plugins\/SmartMeterP1\/core\/config\/p1.json": {
         "Heures pleines": "Vollständige Stunden",
@@ -40,6 +40,9 @@
         "Tension phase 1": "Spannung Phase 1",
         "Tension phase 2": "Spannung Phase 2",
         "Tension phase 3": "Spannung Phase 3"
+    },
+    "plugins\/SmartMeterP1\/core\/php\/jeeSmartMeterP1.php": {
+        "Vous n\\'etes pas autorisé à effectuer cette action": "Sie sind nicht berechtigt, diese Aktion durchzuführen"
     },
     "plugins\/SmartMeterP1\/desktop\/js\/SmartMeterP1.js": {
         "Afficher": "Anzeige",
@@ -90,8 +93,9 @@
         "Visible": "Sichtbar"
     },
     "plugins\/SmartMeterP1\/plugin_info\/configuration.php": {
-        "Délai d'actualisation (s)": "Aktualisierungszeit (s)",
+        "Cycle (s)": "Zyklus (s)",
         "Démon": "Dämon",
-        "Un délai court augmentera la charge de votre système": "Eine kurze Verzögerung wird die Belastung Ihres Systems erhöhen"
+        "Fréquence d'envoi des informations vers Jeedom; valeur entre 1 et 10": "Häufigkeit, mit der Informationen an Jeedom gesendet werden; Wert zwischen 1 und 10",
+        "Port socket interne": "Interner Socket-Port"
     }
 }
