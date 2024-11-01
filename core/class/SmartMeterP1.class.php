@@ -244,7 +244,7 @@ class SmartMeterP1 extends eqLogic {
 
 		$params = [
 			'action' => 'connect',
-			'host' => $this->getConfiguration('host'),
+			'host' => $this->getLogicalId(),
 			'port' => $this->getConfiguration('port', self::DEF_CONFIG__P1_PORT)
 		];
 		$this->sendToDaemon($params);
@@ -255,7 +255,7 @@ class SmartMeterP1 extends eqLogic {
 
 		$params = [
 			'action' => 'disconnect',
-			'host' => $this->getConfiguration('host')
+			'host' => $this->getLogicalId()
 		];
 		$this->sendToDaemon($params);
 	}
