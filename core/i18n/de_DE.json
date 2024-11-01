@@ -97,5 +97,9 @@
         "Démon": "Dämon",
         "Fréquence d'envoi des informations vers Jeedom; valeur entre 1 et 10": "Häufigkeit, mit der Informationen an Jeedom gesendet werden; Wert zwischen 1 und 10",
         "Port socket interne": "Interner Socket-Port"
+    },
+    "plugins\/SmartMeterP1\/plugin_info\/install.php": {
+        "Cette mise à jour nécessite de réinstaller les dépendances même si elles sont marquées comme OK": "Dieses Update erfordert eine Neuinstallation der Abhängigkeiten, auch wenn sie als OK markiert sind",
+        "Veuilez vérifier les dépendances": "Bitte überprüfen Sie die Abhängigkeiten"
     }
 }

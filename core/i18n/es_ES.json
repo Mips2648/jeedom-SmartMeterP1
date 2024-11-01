@@ -97,5 +97,9 @@
         "Démon": "Demonio",
         "Fréquence d'envoi des informations vers Jeedom; valeur entre 1 et 10": "Frecuencia de envío de información a Jeedom; valor entre 1 y 10",
         "Port socket interne": "Puerto de enchufe interno"
+    },
+    "plugins\/SmartMeterP1\/plugin_info\/install.php": {
+        "Cette mise à jour nécessite de réinstaller les dépendances même si elles sont marquées comme OK": "Esta actualización requiere que reinstale las dependencias aunque estén marcadas como OK",
+        "Veuilez vérifier les dépendances": "Compruebe las dependencias"
     }
 }
