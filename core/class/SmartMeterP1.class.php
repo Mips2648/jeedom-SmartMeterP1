@@ -10,6 +10,7 @@ class SmartMeterP1 extends eqLogic {
 
 	const DEF_CONFIG__P1_PORT = 8088;
 	const DEF_CONFIG_SOCKET_PORT = 55075;
+	const DEF_CONFIG_CYCLE = 2;
 
 	protected static function getSocketPort() {
 		return config::byKey('socketport', __CLASS__, self::DEF_CONFIG_SOCKET_PORT);;
@@ -60,7 +61,7 @@ class SmartMeterP1 extends eqLogic {
 		$cmd = self::PYTHON_PATH . " {$path}/p1client.py";
 		$cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
 		$cmd .= ' --socketport ' . self::getSocketPort();
-		$cmd .= ' --cycle ' . config::byKey('cycle', __CLASS__, 1);
+		$cmd .= ' --cycle ' . config::byKey('cycle', __CLASS__, self::DEF_CONFIG_CYCLE);
 		$cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/SmartMeterP1/core/php/jeeSmartMeterP1.php';
 		$cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__);
 		$cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/daemon.pid';

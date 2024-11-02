@@ -30,7 +30,7 @@ if (!isConnect()) {
                 <sup><i class="fas fa-question-circle tooltips" title="{{Fréquence d'envoi des informations vers Jeedom; valeur entre 1 et 10}}"></i></sup>
             </label>
             <div class="col-xs-2">
-                <input class="configKey form-control" data-l1key="cycle" placeholder="1" />
+                <input class="configKey form-control" data-l1key="cycle" placeholder="<?= SmartMeterP1::DEF_CONFIG_CYCLE ?>" />
             </div>
         </div>
         <div class="form-group">
