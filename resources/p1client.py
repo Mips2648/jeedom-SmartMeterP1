@@ -54,6 +54,7 @@ class P1Daemon(BaseDaemon):
 
     async def __decode_line(self, host: str, line: str):
         try:
+            self._logger.debug("[%s] Decoding line: %s", host, line)
             if line.startswith("!"):
                 await self.add_change(f"{host}::totalImport", self._counters[host]['1.8.1'] + self._counters[host]['1.8.2'])
                 await self.add_change(f"{host}::totalExport", self._counters[host]['2.8.1'] + self._counters[host]['2.8.2'])
@@ -72,7 +73,7 @@ class P1Daemon(BaseDaemon):
                     self._counters[host][code] = value
                     await self.add_change(f"{host}::{code}", value)
                 elif code not in UNUSED_CODES:
-                    self._logger.warning("[%s] Unknown code %s: %s", host, code, line)
+                    self._logger.warning("[%s] Unknown counter code %s: %s", host, code, line)
 
             elif matches := re.search(PATTERN_CODE_WITH_GENERIC_VALUE, line, flags=re.IGNORECASE):
                 code = matches.group(1)
@@ -82,7 +83,7 @@ class P1Daemon(BaseDaemon):
 
                 if code in CODES_WITH_GENERIC_DATA:
                     if code == CODE_TARIF_INDICATOR:
-                        value = int(data == "0001")
+                        data = int(data == "0001")
                     elif code == CODE_MESSAGE:
                         self._logger.info("[%s] Message from P1: %s", host, data)
 
@@ -90,7 +91,7 @@ class P1Daemon(BaseDaemon):
                     await self.add_change(f"{host}::{code}", data)
 
                 elif code not in UNUSED_CODES:
-                    self._logger.warning("[%s] Unknown code %s: %s", host, code, line)
+                    self._logger.warning("[%s] Unknown data code %s: %s", host, code, line)
             else:
                 self._logger.warning("[%s] Unknown line: %s", host, line)
         except Exception as e:

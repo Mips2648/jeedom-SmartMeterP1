@@ -1,4 +1,6 @@
 CODES_WITH_COUNTER = [
+    "1.6.0", # max power import / quarter this month
+    "2.6.0", # max power export / quarter this month
     "1.8.1",  # import high
     "1.8.2",  # import low
     "2.8.1",  # export high
@@ -32,7 +34,6 @@ CODES_WITH_GENERIC_DATA = [
 UNUSED_CODES = [
     "1.0.0",  # datetime; ex:'240118094756W' => 24/01/18 09:47:56
     "1.4.0",  # power last quarter; not used in plugin
-    "1.6.0",  # max power / quarter this month
     "17.0.0",  # power limit for client with pre-paid contract; not used in plugin
     "31.4.0",  # current limit
     "96.3.10",  # breaker state?
@@ -40,5 +41,5 @@ UNUSED_CODES = [
 
 ]
 
-PATTERN_CODE_WITH_COUNTER = "\d\-\d:(\d+\.\d+\.\d+)\((\d+\.\d{1,3})\*([VAkWh]+){1,3}\)"
+PATTERN_CODE_WITH_COUNTER = "\d\-\d:(\d+\.\d+\.\d+)(?:\(\d+[a-zA-Z]\))?\((\d+\.\d{1,3})\*([VAkWh]+){1,3}\)"
 PATTERN_CODE_WITH_GENERIC_VALUE = "\d\-\d:(\d+\.\d+\.\d+)\((.*)\)"
