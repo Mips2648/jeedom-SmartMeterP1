@@ -25,7 +25,7 @@ function InstallComposerDependencies() {
     shell_exec($cmd);
 }
 
-function SmartMeterP1_post_market_install() {
+function SmartMeterP1_post_plugin_install() {
     InstallComposerDependencies();
 }
 
