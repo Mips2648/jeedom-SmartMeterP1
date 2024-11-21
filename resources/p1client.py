@@ -7,12 +7,12 @@ from constant import CODE_MESSAGE, CODE_TARIF_INDICATOR, CODES_WITH_COUNTER, COD
 
 class P1Daemon(BaseDaemon):
     def __init__(self) -> None:
-        super().__init__(on_message_cb=self.on_messssage)
+        super().__init__(on_message_cb=self.on_message)
 
         self._p1: dict[str, asyncio.Task] = {}
         self._counters = {}
 
-    async def on_messssage(self, message: list):
+    async def on_message(self, message: list):
         host: str = message['host']
         if message['action'] == "connect":
             port: str = message['port']
