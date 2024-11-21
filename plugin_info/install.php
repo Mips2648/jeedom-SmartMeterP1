@@ -62,6 +62,10 @@ function SmartMeterP1_update() {
 
     /** @var SmartMeterP1 */
     foreach (eqLogic::byType($pluginId) as $eqLogic) {
+        if ($eqLogic->getConfiguration('autoConnect') == '') {
+            $eqLogic->setConfiguration('autoConnect', 1);
+            $eqLogic->save(true);
+        }
         if ($eqLogic->getLogicalId() == '' && $eqLogic->getConfiguration('host') != '') {
             $eqLogic->setLogicalId($eqLogic->getConfiguration('host'));
             $eqLogic->setConfiguration('host', null);

@@ -85,7 +85,9 @@ class SmartMeterP1 extends eqLogic {
 		/** @var SmartMeterP1 */
 		foreach (eqLogic::byType(__CLASS__, true) as $eqLogic) {
 			$eqLogic->checkAndUpdateCmd('status', 0);
-			$eqLogic->connectP1();
+			if ($eqLogic->getConfiguration('autoConnect', 1) == 1) {
+				$eqLogic->connectP1();
+			}
 		}
 		return true;
 	}
@@ -109,14 +111,17 @@ class SmartMeterP1 extends eqLogic {
 	}
 
 	private static function isDaemonStarted() {
-		$deamon_info = self::deamon_info();
-		return ($deamon_info['state'] === 'ok');
+		$daemon_info = self::deamon_info();
+		return ($daemon_info['state'] === 'ok');
 	}
 
 	public function handleMessage($data) {
 		log::add(__CLASS__, 'debug', "handleMessage: " . json_encode($data));
 		foreach ($data as $code => $value) {
 			$this->checkAndUpdateCmd($code, $value);
+			if ($code == 'status') {
+				log::add(__CLASS__, 'info', $this->getName() . ' ' . ($value == 1 ? 'connected' : 'disconnected'));
+			}
 		}
 	}
 
@@ -168,6 +173,10 @@ class SmartMeterP1 extends eqLogic {
 				}
 				$monthExport->event(round($currentExport - $monthIndex, 3));
 			}
+
+			if ($eqLogic->getConfiguration('autoConnect', 1) == 1 && $eqLogic->getCmdInfoValue('status', 0) == 0) {
+				$eqLogic->connectP1();
+			}
 		}
 	}
 
@@ -218,6 +227,10 @@ class SmartMeterP1 extends eqLogic {
 		return $this;
 	}
 
+	public function preInsert() {
+		$this->setConfiguration('autoConnect', 1);
+	}
+
 	public function postInsert() {
 		$this->createCommands();
 	}
@@ -229,7 +242,7 @@ class SmartMeterP1 extends eqLogic {
 	}
 
 	public function postUpdate() {
-		if ($this->getIsEnable() == 1) {
+		if ($this->getIsEnable() == 1 && $this->getConfiguration('autoConnect', 1) == 1) {
 			$this->connectP1();
 		} else {
 			$this->disconnectP1();
@@ -243,6 +256,8 @@ class SmartMeterP1 extends eqLogic {
 	public function connectP1() {
 		if (!self::isDaemonStarted()) return;
 
+		log::add(__CLASS__, 'info', "Connecting to {$this->getName()}");
+
 		$params = [
 			'action' => 'connect',
 			'host' => $this->getLogicalId(),
@@ -253,6 +268,8 @@ class SmartMeterP1 extends eqLogic {
 
 	public function disconnectP1() {
 		if (!self::isDaemonStarted()) return;
+
+		log::add(__CLASS__, 'info', "Disconnecting from {$this->getName()}");
 
 		$params = [
 			'action' => 'disconnect',

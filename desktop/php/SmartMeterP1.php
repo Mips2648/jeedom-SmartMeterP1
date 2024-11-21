@@ -135,7 +135,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{{Connexion automatique}}</label>
+                                    <div class="col-sm-6">
+                                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="autoConnect" checked>{{Essayer de se (re)connecter automatiquement si hors ligne}}</label>
+                                    </div>
+                                </div>
 
                             </div>
                             <div class="col-lg-4">
