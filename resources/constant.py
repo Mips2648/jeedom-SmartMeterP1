@@ -1,6 +1,6 @@
 CODES_WITH_COUNTER = [
-    "1.6.0", # max power import / quarter this month
-    "2.6.0", # max power export / quarter this month
+    "1.6.0",  # max power import / quarter this month
+    "2.6.0",  # max power export / quarter this month
     "1.8.1",  # import high
     "1.8.2",  # import low
     "2.8.1",  # export high
@@ -27,8 +27,8 @@ CODE_MESSAGE = "96.13.0"
 CODES_WITH_GENERIC_DATA = [
     "96.1.1",  # serial number
     "96.1.4",  # id
-    CODE_TARIF_INDICATOR, # tariff indicator
-    CODE_MESSAGE, # message
+    CODE_TARIF_INDICATOR,  # tariff indicator
+    CODE_MESSAGE,  # message
 ]
 
 UNUSED_CODES = [

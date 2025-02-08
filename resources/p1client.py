@@ -5,6 +5,7 @@ from jeedomdaemon.base_daemon import BaseDaemon
 
 from constant import CODE_MESSAGE, CODE_TARIF_INDICATOR, CODES_WITH_COUNTER, CODES_WITH_GENERIC_DATA, UNUSED_CODES, PATTERN_CODE_WITH_COUNTER, PATTERN_CODE_WITH_GENERIC_VALUE
 
+
 class P1Daemon(BaseDaemon):
     def __init__(self) -> None:
         super().__init__(on_message_cb=self.on_message)
@@ -38,7 +39,7 @@ class P1Daemon(BaseDaemon):
     async def __read_p1(self, host: str, reader: asyncio.StreamReader):
         try:
             self._logger.info("[%s] Connected and start reading values", host)
-            await self.send_to_jeedom({host :{"status": 1}})
+            await self.send_to_jeedom({host: {"status": 1}})
             self._counters[host] = {}
             while True:
                 await asyncio.sleep(0.01)
@@ -49,7 +50,7 @@ class P1Daemon(BaseDaemon):
                 await self.__decode_line(host, message)
 
         except asyncio.CancelledError:
-            await self.send_to_jeedom({host :{"status": 0}})
+            await self.send_to_jeedom({host: {"status": 0}})
             self._logger.info("[%s] Connection closed", host)
 
     async def __decode_line(self, host: str, line: str):
@@ -96,5 +97,6 @@ class P1Daemon(BaseDaemon):
                 self._logger.warning("[%s] Unknown line: %s", host, line)
         except Exception as e:
             self._logger.error("[%s] Error decoding line: %s", host, e)
+
 
 P1Daemon().run()
