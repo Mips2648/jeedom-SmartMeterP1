@@ -10,6 +10,21 @@ from jeedomdaemon.base_daemon import BaseDaemon
 from constant import CODE_MESSAGE, CODE_TARIF_INDICATOR, CODES_WITH_COUNTER, CODES_WITH_GENERIC_DATA, UNUSED_CODES, PATTERN_CODE_WITH_COUNTER, PATTERN_CODE_WITH_GENERIC_VALUE
 
 
+class MyRange:
+    def __init__(self, n: int):
+        self._n = n
+        self._x = 0
+
+    def __iter__(self):
+        self._x = 0
+        return self
+
+    def __next__(self):
+        x = self._x
+        self._x = (self._x + 1) % self._n
+        return x
+
+
 class P1Host:
     def __init__(self, daemon: BaseDaemon, host: str, port: int):
         self.__host = host
@@ -63,6 +78,7 @@ class P1Host:
         await self.__start_read()
 
     async def __heartbeat(self):
+        r = MyRange(6)
         self.__last_read_time = time.time()
         while True:
             await asyncio.sleep(self.__heartbeat_timeout)
@@ -70,7 +86,10 @@ class P1Host:
                 self._logger.warning("[%s] No values received for %i seconds, reset connection", self.__host, self.__heartbeat_timeout)
                 await self._reset()
             else:
-                self._logger.info("[%s] Heartbeat ok", self.__host)
+                if next(r) == 0:
+                    self._logger.info("[%s] Connection alive", self.__host)
+                else:
+                    self._logger.debug("[%s] Connection alive", self.__host)
 
     async def __read_p1(self, reader: asyncio.StreamReader):
         try:
