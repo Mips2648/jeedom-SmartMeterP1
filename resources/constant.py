@@ -41,5 +41,5 @@ UNUSED_CODES = [
 
 ]
 
-PATTERN_CODE_WITH_COUNTER = "\d\-\d:(\d+\.\d+\.\d+)(?:\(\d+[a-zA-Z]\))?\((\d+\.\d{1,3})\*([VAkWh]+){1,3}\)"
-PATTERN_CODE_WITH_GENERIC_VALUE = "\d\-\d:(\d+\.\d+\.\d+)\((.*)\)"
+PATTERN_CODE_WITH_COUNTER = r"\d\-\d:(\d+\.\d+\.\d+)(?:\(\d+[a-zA-Z]\))?\((\d+\.\d{1,3})\*([VAkWh]+){1,3}\)"
+PATTERN_CODE_WITH_GENERIC_VALUE = r"\d\-\d:(\d+\.\d+\.\d+)\((.*)\)"

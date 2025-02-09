@@ -58,7 +58,7 @@ class SmartMeterP1 extends eqLogic {
 		}
 
 		$path = realpath(__DIR__ . '/../../resources');
-		$cmd = self::PYTHON_PATH . " {$path}/p1client.py";
+		$cmd = self::PYTHON_PATH . " {$path}/p1daemon.py";
 		$cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
 		$cmd .= ' --socketport ' . self::getSocketPort();
 		$cmd .= ' --cycle ' . config::byKey('cycle', __CLASS__, self::DEF_CONFIG_CYCLE);
@@ -100,7 +100,7 @@ class SmartMeterP1 extends eqLogic {
 			system::kill($pid);
 		}
 		sleep(1);
-		system::kill('p1client.py');
+		system::kill('p1daemon.py');
 		// system::fuserk(config::byKey('socketport', __CLASS__));
 		sleep(1);
 
