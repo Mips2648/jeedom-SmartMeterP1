@@ -78,7 +78,7 @@ class P1Host:
         await self.__start_read()
 
     async def __heartbeat(self):
-        r = MyRange(6)
+        r = MyRange(30)
         self.__last_read_time = time.time()
         while True:
             await asyncio.sleep(self.__heartbeat_timeout)
