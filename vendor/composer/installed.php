@@ -1,33 +1,32 @@
-<?php return array (
-  'root' => 
-  array (
+<?php return array(
+  'root' => array(
+    'name' => 'mips/jeedom-smartmeterp1',
     'pretty_version' => 'dev-master',
     'version' => 'dev-master',
-    'aliases' => 
-    array (
-    ),
-    'reference' => '052381f844190ddcc97ce6f9565c3e90af47e3cb',
-    'name' => 'mips/jeedom-smartmeterp1',
+    'reference' => '4a16972b86a6b06d775b04f2b0766c5f195c9de0',
+    'type' => 'library',
+    'install_path' => __DIR__ . '/../../',
+    'aliases' => array(),
+    'dev' => true,
   ),
-  'versions' => 
-  array (
-    'mips/jeedom-smartmeterp1' => 
-    array (
+  'versions' => array(
+    'mips/jeedom-smartmeterp1' => array(
       'pretty_version' => 'dev-master',
       'version' => 'dev-master',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '052381f844190ddcc97ce6f9565c3e90af47e3cb',
+      'reference' => '4a16972b86a6b06d775b04f2b0766c5f195c9de0',
+      'type' => 'library',
+      'install_path' => __DIR__ . '/../../',
+      'aliases' => array(),
+      'dev_requirement' => false,
     ),
-    'mips/jeedom-tools' => 
-    array (
-      'pretty_version' => 'v1.0.1',
-      'version' => '1.0.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'bb8a7b65641ab20e93ba4d2a239ab2a6a7bc34af',
+    'mips/jeedom-tools' => array(
+      'pretty_version' => 'v1.1.1',
+      'version' => '1.1.1.0',
+      'reference' => '5843ad156530cc36f40ff642baabd476219ddb6e',
+      'type' => 'library',
+      'install_path' => __DIR__ . '/../mips/jeedom-tools',
+      'aliases' => array(),
+      'dev_requirement' => false,
     ),
   ),
 );

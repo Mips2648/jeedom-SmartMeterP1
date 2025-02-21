@@ -1,46 +1,52 @@
 <?php
 
 require_once __DIR__ . '/../../../../core/php/core.inc.php';
-require_once dirname(__FILE__) . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 class SmartMeterP1 extends eqLogic {
 	use MipsEqLogicTrait;
 
-	public static function setDaemon() {
-		/** @var cron */
-		$cron = cron::byClassAndFunction(__CLASS__, 'daemon');
-		if (!is_object($cron)) {
-			$cron = new cron();
-		}
-		$cron->setClass(__CLASS__);
-		$cron->setFunction('daemon');
-		$cron->setEnable(1);
-		$cron->setDeamon(1);
-		$cron->setDeamonSleepTime(config::byKey('daemonSleepTime', __CLASS__, 5));
-		$cron->setTimeout(1440);
-		$cron->setSchedule('* * * * *');
-		$cron->save();
-		return $cron;
+	const PYTHON_PATH = __DIR__ . '/../../resources/venv/bin/python3';
+
+	const DEF_CONFIG__P1_PORT = 8088;
+	const DEF_CONFIG_SOCKET_PORT = 55075;
+	const DEF_CONFIG_CYCLE = 2;
+
+	protected static function getSocketPort() {
+		return config::byKey('socketport', __CLASS__, self::DEF_CONFIG_SOCKET_PORT);;
 	}
 
-	private static function getDaemonCron() {
-		/** @var cron */
-		$cron = cron::byClassAndFunction(__CLASS__, 'daemon');
-		if (!is_object($cron)) {
-			return self::setDaemon();
+	public static function dependancy_install() {
+		log::remove(__CLASS__ . '_update');
+		return array('script' => __DIR__ . '/../../resources/install_#stype#.sh', 'log' => log::getPathToLog(__CLASS__ . '_update'));
+	}
+
+	public static function dependancy_info() {
+		$return = array();
+		$return['log'] = log::getPathToLog(__CLASS__ . '_update');
+		$return['progress_file'] = jeedom::getTmpFolder(__CLASS__) . '/dependance';
+		$return['state'] = 'ok';
+		if (file_exists(jeedom::getTmpFolder(__CLASS__) . '/dependance')) {
+			$return['state'] = 'in_progress';
+		} elseif (!self::pythonRequirementsInstalled(self::PYTHON_PATH, __DIR__ . '/../../resources/requirements.txt')) {
+			$return['state'] = 'nok';
 		}
-		return $cron;
+		return $return;
 	}
 
 	public static function deamon_info() {
 		$return = array();
-		$return['log'] = '';
-		$return['state'] = 'nok';
-		$cron = self::getDaemonCron();
-		if ($cron->running()) {
-			$return['state'] = 'ok';
-		}
+		$return['log'] = __CLASS__;
 		$return['launchable'] = 'ok';
+		$return['state'] = 'nok';
+		$pid_file = jeedom::getTmpFolder(__CLASS__) . '/daemon.pid';
+		if (file_exists($pid_file)) {
+			if (@posix_getsid(trim(file_get_contents($pid_file)))) {
+				$return['state'] = 'ok';
+			} else {
+				shell_exec(system::getCmdSudo() . 'rm -rf ' . $pid_file . ' 2>&1 > /dev/null');
+			}
+		}
 		return $return;
 	}
 
@@ -50,38 +56,72 @@ class SmartMeterP1 extends eqLogic {
 		if ($deamon_info['launchable'] != 'ok') {
 			throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
 		}
-		$cron = self::getDaemonCron();
-		$cron->run();
+
+		$path = realpath(__DIR__ . '/../../resources');
+		$cmd = self::PYTHON_PATH . " {$path}/p1daemon.py";
+		$cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
+		$cmd .= ' --socketport ' . self::getSocketPort();
+		$cmd .= ' --cycle ' . config::byKey('cycle', __CLASS__, self::DEF_CONFIG_CYCLE);
+		$cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/SmartMeterP1/core/php/jeeSmartMeterP1.php';
+		$cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__);
+		$cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/daemon.pid';
+		log::add(__CLASS__, 'info', 'Lancement démon');
+		$result = exec($cmd . ' >> ' . log::getPathToLog(__CLASS__ . '_daemon') . ' 2>&1 &');
+		$i = 0;
+		while ($i < 10) {
+			$deamon_info = self::deamon_info();
+			if ($deamon_info['state'] == 'ok') {
+				break;
+			}
+			sleep(1);
+			$i++;
+		}
+		if ($i >= 10) {
+			log::add(__CLASS__, 'error', __('Impossible de lancer le démon', __FILE__), 'unableStartDeamon');
+			return false;
+		}
+		message::removeAll(__CLASS__, 'unableStartDeamon');
+
+		/** @var SmartMeterP1 */
+		foreach (eqLogic::byType(__CLASS__, true) as $eqLogic) {
+			$eqLogic->checkAndUpdateCmd('status', 0);
+			if ($eqLogic->getConfiguration('autoConnect', 1) == 1) {
+				$eqLogic->connectP1();
+			}
+		}
+		return true;
 	}
 
 	public static function deamon_stop() {
-		$cron = self::getDaemonCron();
-		$cron->halt();
+		$pid_file = jeedom::getTmpFolder(__CLASS__) . '/daemon.pid';
+		if (file_exists($pid_file)) {
+			log::add(__CLASS__, 'info', 'Arrêt démon');
+			$pid = intval(trim(file_get_contents($pid_file)));
+			system::kill($pid);
+		}
+		sleep(1);
+		system::kill('p1daemon.py');
+		// system::fuserk(config::byKey('socketport', __CLASS__));
+		sleep(1);
 
 		/** @var SmartMeterP1 */
-		foreach (self::byType(__CLASS__, true) as $eqLogic) {
-			$eqLogic->setStatusCmd(0);
+		foreach (eqLogic::byType(__CLASS__, true) as $eqLogic) {
+			$eqLogic->checkAndUpdateCmd('status', 0);
 		}
 	}
 
-	public static function deamon_changeAutoMode($_mode) {
-		$cron = self::getDaemonCron();
-		$cron->setEnable($_mode);
-		$cron->save();
+	private static function isDaemonStarted() {
+		$daemon_info = self::deamon_info();
+		return ($daemon_info['state'] === 'ok');
 	}
 
-	public static function postConfig_daemonSleepTime($value) {
-		self::setDaemon();
-		$deamon_info = self::deamon_info();
-		if ($deamon_info['state'] == 'ok') {
-			self::deamon_start();
-		}
-	}
-
-	public static function daemon() {
-		/** @var SmartMeterP1 */
-		foreach (self::byType(__CLASS__, true) as $eqLogic) {
-			$eqLogic->refreshP1();
+	public function handleMessage($data) {
+		log::add(__CLASS__, 'debug', "handleMessage: " . json_encode($data));
+		foreach ($data as $code => $value) {
+			$this->checkAndUpdateCmd($code, $value);
+			if ($code == 'status') {
+				log::add(__CLASS__, 'info', $this->getName() . ' ' . ($value == 1 ? 'connected' : 'disconnected'));
+			}
 		}
 	}
 
@@ -133,6 +173,10 @@ class SmartMeterP1 extends eqLogic {
 				}
 				$monthExport->event(round($currentExport - $monthIndex, 3));
 			}
+
+			if ($eqLogic->getConfiguration('autoConnect', 1) == 1 && $eqLogic->getCmdInfoValue('status', 0) == 0) {
+				$eqLogic->connectP1();
+			}
 		}
 	}
 
@@ -171,140 +215,6 @@ class SmartMeterP1 extends eqLogic {
 		}
 	}
 
-	private function setStatusCmd(int $value) {
-		/** @var cmd */
-		$statusCmd = $this->getCmd('info', 'status');
-		if (!is_object($statusCmd)) return;
-		$statusCmd->event($value);
-	}
-
-	private function refreshP1() {
-		$host = $this->getConfiguration('host');
-		if ($host == '') return;
-
-		$port = $this->getConfiguration('port', 8088);
-		if ($port == '') return;
-
-		$cfgTimeOut = "5";
-
-		try {
-			$f = fsockopen($host, $port, $cfgTimeOut);
-			if (!$f) {
-				log::add(__CLASS__, 'error', "Cannot connect to {$this->getName()} ({$host}:{$port})");
-				$this->setStatusCmd(0);
-			} else {
-				log::add(__CLASS__, 'debug', "Connected to {$this->getName()} ({$host}:{$port})");
-				$this->setStatusCmd(1);
-
-				$codes = [
-					"1.8.1",	// import high
-					"1.8.2",	// import low
-					"2.8.1",	// export high
-					"2.8.2",	// export low
-					"1.7.0",	// import power
-					"2.7.0",	// export power
-					"32.7.0",	// voltage 1
-					"52.7.0",	// voltage 2
-					"72.7.0",	// voltage 3
-					"31.7.0",	// intensity 1
-					"51.7.0",	// intensity 1
-					"71.7.0",	// intensity 1
-					"21.7.0",	// import power 1
-					"41.7.0",	// import power 2
-					"61.7.0",	// import power 3
-					"22.7.0",	// export power 1
-					"42.7.0",	// export power 2
-					"62.7.0"	// export power 3
-				];
-				$unused_codes = [
-					"1.4.0", // power last quarter; not used in plugin
-					"17.0.0" // power limit for client with pre-paid contract; not used in plugin
-				];
-				$fullregex = '/\d\-\d:(\d+\.\d+\.\d+)\((\d+\.\d{1,3})\*([VAkWh]+){1,3}\)/';
-				$coderegex = '/\d\-\d:(\d+\.\d+\.\d+)\((.*)\)/';
-				$results = [];
-				while (($line =  fgets($f, 4096)) !== false) {
-					$line = trim($line);
-					if (empty($line)) continue;
-					log::add(__CLASS__, 'debug', "Parse: {$line}");
-					$matches = [];
-					if (preg_match($fullregex, $line, $matches) === 1) {
-						$code = $matches[1];
-						if (in_array($code, $codes)) {
-							$value = $matches[2];
-							$unit = $matches[3];
-							if ($unit === 'kW') {
-								$value *= 1000;
-							}
-							$this->checkAndUpdateCmd($code, $value);
-							$results[$code] = $value;
-						} elseif (!in_array($code, $unused_codes)) {
-							log::add(__CLASS__, 'warning', "Unknown code {$code}: {$line}");
-						}
-					} elseif (preg_match($coderegex, $line, $matches) === 1) {
-						$code = $matches[1];
-						$data = $matches[2];
-
-						switch ($code) {
-							case '1.0.0': // datetime; ex:'240118094756W' => 24/01/18 09:47:56
-							case '1.6.0': // max power / quarter this month
-							case '31.4.0': // current limit
-							case '96.3.10': // breaker state?
-							case '98.1.0':
-								// not usefull
-								break;
-							case '96.1.1': // serial number
-							case '96.1.4': // id
-								$this->checkAndUpdateCmd($code, $data);
-								break;
-							case '96.14.0': // day/night
-								$this->checkAndUpdateCmd($code, (int)($data == '0001'));
-								break;
-							case '96.13.0': // message and last code from the run
-								if ($data != '') {
-									log::add(__CLASS__, 'info', "Message received: {$code}={$data}");
-								}
-								$this->checkAndUpdateCmd('totalImport', $results['1.8.1'] + $results['1.8.2']);
-								$this->checkAndUpdateCmd('totalExport', $results['2.8.1'] + $results['2.8.2']);
-								$this->checkAndUpdateCmd('Import-Export', $results['1.7.0'] - $results['2.7.0']);
-								log::add(__CLASS__, 'info', "Successfuly refreshed all values of {$this->getName()} ({$host}:{$port})");
-								break 2; // break from switch & while because last code from the run
-							default:
-								log::add(__CLASS__, 'warning', "Unknown data: {$code}={$data}");
-								break;
-						}
-					} else {
-						// log::add(__CLASS__, 'debug', "cannot extract actual code & value from raw data: {$line}");
-					}
-				}
-			}
-		} catch (\Throwable $th) {
-			log::add(__CLASS__, 'error', "Error with {$this->getName()} ({$host}:{$port}): {$th->getMessage()}");
-		} finally {
-			log::add(__CLASS__, 'debug', "Closing connection to {$this->getName()} ({$host}:{$port})");
-			fclose($f);
-		}
-	}
-
-	private static function getTopicPrefix() {
-		return config::byKey('topic_prefix', __CLASS__, 'lowi', true);
-	}
-
-	private static function tryPublishToMQTT($topic, $value) {
-		try {
-			$_MQTT2 = 'mqtt2';
-			if (!class_exists($_MQTT2)) {
-				log::add(__CLASS__, 'debug', __('Le plugin mqtt2 n\'est pas installé', __FILE__));
-				return;
-			}
-			$topic = self::getTopicPrefix() . '/' . $topic;
-			$_MQTT2::publish($topic, $value);
-			log::add(__CLASS__, 'debug', "published to mqtt: {$topic}={$value}");
-		} catch (\Throwable $th) {
-			log::add(__CLASS__, 'warning', __('Une erreur s\'est produite dans le plugin mqtt2:', __FILE__) . $th->getMessage());
-		}
-	}
-
 	public function createCommands() {
 		log::add(__CLASS__, 'debug', "Checking commands of {$this->getName()}");
 
@@ -317,15 +227,75 @@ class SmartMeterP1 extends eqLogic {
 		return $this;
 	}
 
+	public function preInsert() {
+		$this->setConfiguration('autoConnect', 1);
+	}
+
 	public function postInsert() {
 		$this->createCommands();
+	}
+
+	public function preUpdate() {
+		if ($this->getIsEnable() == 0) return;
+
+		if ($this->getLogicalId() == '') throw new Exception(__("Vous devez saisir une adresse IP pour activer l'équipement", __FILE__));
+	}
+
+	public function postUpdate() {
+		if ($this->getIsEnable() == 1 && $this->getConfiguration('autoConnect', 1) == 1) {
+			$this->connectP1();
+		} else {
+			$this->disconnectP1();
+		}
+	}
+
+	public function preRemove() {
+		$this->disconnectP1();
+	}
+
+	public function connectP1() {
+		if (!self::isDaemonStarted()) return;
+
+		log::add(__CLASS__, 'info', "Connecting to {$this->getName()}");
+
+		$params = [
+			'action' => 'connect',
+			'host' => $this->getLogicalId(),
+			'port' => $this->getConfiguration('port', self::DEF_CONFIG__P1_PORT)
+		];
+		$this->sendToDaemon($params);
+	}
+
+	public function disconnectP1() {
+		if (!self::isDaemonStarted()) return;
+
+		log::add(__CLASS__, 'info', "Disconnecting from {$this->getName()}");
+
+		$params = [
+			'action' => 'disconnect',
+			'host' => $this->getLogicalId()
+		];
+		$this->sendToDaemon($params);
 	}
 }
 
 class SmartMeterP1Cmd extends cmd {
 
+	public function dontRemoveCmd() {
+		return true;
+	}
+
 	public function execute($_options = array()) {
+		/** @var SmartMeterP1 */
 		$eqLogic = $this->getEqLogic();
 		log::add('SmartMeterP1', 'debug', "command: {$this->getLogicalId()} on {$eqLogic->getLogicalId()} : {$eqLogic->getName()}");
+		switch ($this->getLogicalId()) {
+			case 'connect':
+				$eqLogic->connectP1();
+				break;
+			case 'disconnect':
+				$eqLogic->disconnectP1();
+				break;
+		}
 	}
 }

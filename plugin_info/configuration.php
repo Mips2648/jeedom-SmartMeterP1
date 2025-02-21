@@ -15,7 +15,7 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+require_once __DIR__ . '/../../../core/php/core.inc.php';
 include_file('core', 'authentification', 'php');
 if (!isConnect()) {
     include_file('desktop', '404', 'php');
@@ -26,12 +26,17 @@ if (!isConnect()) {
     <fieldset>
         <legend><i class="fas fa-university"></i> {{Démon}}</legend>
         <div class="form-group">
-            <label class="col-sm-3 control-label">
-                {{Délai d'actualisation (s)}}
-                <sup><i class="fas fa-question-circle" title="{{Un délai court augmentera la charge de votre système}}"></i></sup>
+            <label class="col-xs-3 control-label">{{Cycle (s)}}
+                <sup><i class="fas fa-question-circle tooltips" title="{{Fréquence d'envoi des informations vers Jeedom; valeur entre 1 et 10}}"></i></sup>
             </label>
-            <div class="col-sm-1">
-                <input class="configKey form-control" data-l1key="daemonSleepTime" placeholder="5" />
+            <div class="col-xs-2">
+                <input class="configKey form-control" data-l1key="cycle" placeholder="<?= SmartMeterP1::DEF_CONFIG_CYCLE ?>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-3 control-label">{{Port socket interne}}</label>
+            <div class="col-xs-2">
+                <input class="configKey form-control" data-l1key="socketport" placeholder="<?= SmartMeterP1::DEF_CONFIG_SOCKET_PORT ?>" />
             </div>
         </div>
     </fieldset>

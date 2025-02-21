@@ -1,6 +1,34 @@
 {
     "p1": [
         {
+            "logicalId": "1.6.0",
+            "name": "{{Prélèvement max mois}}",
+            "type": "info",
+            "subtype": "numeric",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
+            "logicalId": "2.6.0",
+            "name": "{{Injection max mois}}",
+            "type": "info",
+            "subtype": "numeric",
+            "isVisible": 0,
+            "isHistorized": 0,
+            "unite": "W",
+            "template": {
+                "dashboard": "line",
+                "mobile": "line"
+            },
+            "initialValue": 0
+        },
+        {
             "logicalId": "1.8.1",
             "name": "{{Prélèvement heures pleines}}",
             "type": "info",
@@ -414,6 +442,36 @@
         }
     ],
     "meta": [
+        {
+            "logicalId": "connect",
+            "name": "On",
+            "type": "action",
+            "subtype": "other",
+            "isVisible": 1,
+            "value": "status",
+            "display": {
+                "icon": "<i class=\"fas fa-link\"><\/i>"
+            },
+            "template": {
+                "dashboard": "core::binarySwitch",
+                "mobile": "core::binarySwitch"
+            }
+        },
+        {
+            "logicalId": "disconnect",
+            "name": "Off",
+            "type": "action",
+            "subtype": "other",
+            "isVisible": 1,
+            "value": "status",
+            "display": {
+                "icon": "<i class=\"fas fa-unlink\"><\/i>"
+            },
+            "template": {
+                "dashboard": "core::binarySwitch",
+                "mobile": "core::binarySwitch"
+            }
+        },
         {
             "logicalId": "status",
             "name": "{{Statut}}",

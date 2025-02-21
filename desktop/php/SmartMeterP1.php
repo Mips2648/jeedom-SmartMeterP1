@@ -129,13 +129,18 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     <label class="col-sm-3 control-label">{{Hôte}}</label>
                                     <div class="col-sm-6">
                                         <div class="input-group">
-                                            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="host" placeholder="Saisir l'adresse IP" />
+                                            <input type="text" class="eqLogicAttr form-control" data-l1key="logicalId" placeholder="Saisir l'adresse IP" />
                                             <span class="input-group-addon">:</span>
-                                            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="port" placeholder="8088" />
+                                            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="port" placeholder="<?= SmartMeterP1::DEF_CONFIG__P1_PORT ?>" />
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{{Connexion automatique}}</label>
+                                    <div class="col-sm-6">
+                                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="autoConnect" checked>{{Essayer de se (re)connecter automatiquement si hors ligne}}</label>
+                                    </div>
+                                </div>
 
                             </div>
                             <div class="col-lg-4">

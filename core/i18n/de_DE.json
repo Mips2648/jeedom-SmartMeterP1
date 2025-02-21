@@ -6,9 +6,9 @@
         "eqLogic non trouvé : ": "eqLogic nicht gefunden :"
     },
     "plugins\/SmartMeterP1\/core\/class\/SmartMeterP1.class.php": {
-        "Le plugin mqtt2 n\\'est pas installé": "Das Plugin mqtt2 ist nicht installiert",
-        "Une erreur s\\'est produite dans le plugin mqtt2:": "Im Plugin mqtt2 ist ein Fehler aufgetreten:",
-        "Veuillez vérifier la configuration": "Bitte überprüfen Sie die Konfiguration"
+        "Impossible de lancer le démon": "Der Dämon kann nicht gestartet werden",
+        "Veuillez vérifier la configuration": "Bitte überprüfen Sie die Konfiguration",
+        "Vous devez saisir une adresse IP pour activer l'équipement": "Sie müssen eine IP-Adresse eingeben, um das Gerät zu aktivieren"
     },
     "plugins\/SmartMeterP1\/core\/config\/p1.json": {
         "Heures pleines": "Vollständige Stunden",
@@ -16,6 +16,7 @@
         "Injection heures creuses": "Einspeisung Nebenzeiten",
         "Injection heures pleines": "Einspeisung volle Stunden",
         "Injection jour": "Einspritzung Tag",
+        "Injection max mois": "Injektion max. Monat",
         "Injection mois": "Injektion Monat",
         "Injection total": "Injektion gesamt",
         "Intensité phase 1": "Intensität Phase 1",
@@ -25,6 +26,7 @@
         "Prélèvement heures creuses": "Entnahme Nebenzeiten",
         "Prélèvement heures pleines": "Entnahme Vollstunden",
         "Prélèvement jour": "Entnahme Tag",
+        "Prélèvement max mois": "Max. monatliche Entnahme",
         "Prélèvement mois": "Abbuchung Monat",
         "Prélèvement total": "Gesamtentnahme",
         "Puissance injectée": "Eingespeiste Leistung",
@@ -40,6 +42,9 @@
         "Tension phase 1": "Spannung Phase 1",
         "Tension phase 2": "Spannung Phase 2",
         "Tension phase 3": "Spannung Phase 3"
+    },
+    "plugins\/SmartMeterP1\/core\/php\/jeeSmartMeterP1.php": {
+        "Vous n\\'etes pas autorisé à effectuer cette action": "Sie sind nicht berechtigt, diese Aktion durchzuführen"
     },
     "plugins\/SmartMeterP1\/desktop\/js\/SmartMeterP1.js": {
         "Afficher": "Anzeige",
@@ -66,12 +71,14 @@
         "Commandes": "Befehle",
         "Configuration": "Konfiguration",
         "Configuration avancée": "Erweiterte Konfiguration",
+        "Connexion automatique": "Automatische Verbindung",
         "Créer les commandes manquantes": "Erstellen Sie die fehlenden Befehle",
         "Description": "Beschreibung",
         "Documentation": "Dokumentation",
         "Equipement": "Gerät",
         "Equipement non visible": "Ausrüstung nicht sichtbar",
         "Equipement visible": "Sichtbare Ausstattung",
+        "Essayer de se (re)connecter automatiquement si hors ligne": "Versuchen, sich automatisch (wieder) einzuloggen, wenn offline",
         "Etat": "Zustand",
         "Gestion": "Management",
         "Hôte": "Host",
@@ -90,8 +97,13 @@
         "Visible": "Sichtbar"
     },
     "plugins\/SmartMeterP1\/plugin_info\/configuration.php": {
-        "Délai d'actualisation (s)": "Aktualisierungszeit (s)",
+        "Cycle (s)": "Zyklus (s)",
         "Démon": "Dämon",
-        "Un délai court augmentera la charge de votre système": "Eine kurze Verzögerung wird die Belastung Ihres Systems erhöhen"
+        "Fréquence d'envoi des informations vers Jeedom; valeur entre 1 et 10": "Häufigkeit, mit der Informationen an Jeedom gesendet werden; Wert zwischen 1 und 10",
+        "Port socket interne": "Interner Socket-Port"
+    },
+    "plugins\/SmartMeterP1\/plugin_info\/install.php": {
+        "Cette mise à jour nécessite de réinstaller les dépendances même si elles sont marquées comme OK": "Dieses Update erfordert eine Neuinstallation der Abhängigkeiten, auch wenn sie als OK markiert sind",
+        "Veuilez vérifier les dépendances": "Bitte überprüfen Sie die Abhängigkeiten"
     }
 }

@@ -16,7 +16,7 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+require_once __DIR__ . '/../../../core/php/core.inc.php';
 
 function InstallComposerDependencies() {
     $pluginId = basename(realpath(__DIR__ . '/..'));
@@ -25,11 +25,27 @@ function InstallComposerDependencies() {
     shell_exec($cmd);
 }
 
+function checkDependencies() {
+    $pluginId = basename(realpath(__DIR__ . '/..'));
+    $dependencyInfo = SmartMeterP1::dependancy_info();
+    if (!isset($dependencyInfo['state'])) {
+        message::add($pluginId, __('Veuilez vérifier les dépendances', __FILE__));
+    } elseif ($dependencyInfo['state'] == 'nok') {
+        try {
+            $plugin = plugin::byId($pluginId);
+            $plugin->dependancy_install();
+        } catch (\Throwable $th) {
+            message::add($pluginId, __('Cette mise à jour nécessite de réinstaller les dépendances même si elles sont marquées comme OK', __FILE__));
+        }
+    }
+}
+
+function SmartMeterP1_post_plugin_install() {
+    InstallComposerDependencies();
+}
+
 function SmartMeterP1_install() {
     $pluginId = basename(realpath(__DIR__ . '/..'));
-    InstallComposerDependencies();
-
-    SmartMeterP1::setDaemon();
 
     $cron = cron::byClassAndFunction($pluginId, 'dailyReset');
     if (!is_object($cron)) {
@@ -46,9 +62,6 @@ function SmartMeterP1_install() {
 
 function SmartMeterP1_update() {
     $pluginId = basename(realpath(__DIR__ . '/..'));
-    InstallComposerDependencies();
-
-    SmartMeterP1::setDaemon();
 
     $cron = cron::byClassAndFunction($pluginId, 'dailyReset');
     if (!is_object($cron)) {
@@ -61,6 +74,22 @@ function SmartMeterP1_update() {
     $cron->setSchedule('59 23 * * *');
     $cron->setTimeout(10);
     $cron->save();
+
+    /** @var SmartMeterP1 */
+    foreach (eqLogic::byType($pluginId) as $eqLogic) {
+        if ($eqLogic->getConfiguration('autoConnect') == '') {
+            $eqLogic->setConfiguration('autoConnect', 1);
+            $eqLogic->save(true);
+        }
+        if ($eqLogic->getLogicalId() == '' && $eqLogic->getConfiguration('host') != '') {
+            $eqLogic->setLogicalId($eqLogic->getConfiguration('host'));
+            $eqLogic->setConfiguration('host', null);
+            $eqLogic->save(true);
+        }
+        $eqLogic->createCommands();
+    }
+
+    checkDependencies();
 }
 
 function SmartMeterP1_remove() {
