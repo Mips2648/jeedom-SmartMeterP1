@@ -1,1 +1,1 @@
-jeedomdaemon~=1.2.0
+jeedomdaemon~=1.2.9
