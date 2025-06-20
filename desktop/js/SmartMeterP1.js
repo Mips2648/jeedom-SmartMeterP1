@@ -113,29 +113,3 @@ $('#bt_createCommands').on('click', function () {
         }
     });
 });
-
-$(".eqLogicAttr[data-l1key='configuration'][data-l2key='type']").change(function () {
-    $('#img_device').attr("src", 'core/img/no_image.gif');
-
-    if ($(this).value() != '') {
-        $.ajax({
-            type: "POST",
-            url: "plugins/SmartMeterP1/core/ajax/SmartMeterP1.ajax.php",
-            data: {
-                action: "getImage",
-                id: $('.eqLogicAttr[data-l1key=id]').value()
-            },
-            dataType: 'json',
-            error: function (request, status, error) {
-                handleAjaxError(request, status, error);
-            },
-            success: function (data) {
-                if (data.state != 'ok') {
-                    return;
-                }
-                console.log(data)
-                $('#img_device').attr("src", data.result);
-            }
-        })
-    }
-});
