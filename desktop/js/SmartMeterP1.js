@@ -67,30 +67,6 @@ $('.pluginAction[data-action=openLocation]').on('click', function () {
     window.open($(this).attr("data-location"), "_blank", null);
 });
 
-$('#bt_syncmultiMATIC').on('click', function () {
-    $.ajax({
-        type: "POST",
-        url: "plugins/SmartMeterP1/core/ajax/SmartMeterP1.ajax.php",
-        data: {
-            action: "syncDevices",
-        },
-        dataType: 'json',
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        },
-        success: function (data) {
-            if (data.state != 'ok') {
-                $('#div_alert').showAlert({ message: data.result, level: 'danger' });
-                return;
-            }
-            $('#div_alert').showAlert({ message: '{{Synchronisation réussie.}}', level: 'success' });
-            setTimeout(function () {
-                window.location.replace("index.php?v=d&m=SmartMeterP1&p=SmartMeterP1");
-            }, 3000);
-        }
-    });
-});
-
 $('#bt_createCommands').on('click', function () {
     $.ajax({
         type: "POST",
