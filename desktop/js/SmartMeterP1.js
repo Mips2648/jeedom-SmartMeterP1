@@ -67,30 +67,6 @@ $('.pluginAction[data-action=openLocation]').on('click', function () {
     window.open($(this).attr("data-location"), "_blank", null);
 });
 
-$('#bt_syncmultiMATIC').on('click', function () {
-    $.ajax({
-        type: "POST",
-        url: "plugins/SmartMeterP1/core/ajax/SmartMeterP1.ajax.php",
-        data: {
-            action: "syncDevices",
-        },
-        dataType: 'json',
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        },
-        success: function (data) {
-            if (data.state != 'ok') {
-                $('#div_alert').showAlert({ message: data.result, level: 'danger' });
-                return;
-            }
-            $('#div_alert').showAlert({ message: '{{Synchronisation réussie.}}', level: 'success' });
-            setTimeout(function () {
-                window.location.replace("index.php?v=d&m=SmartMeterP1&p=SmartMeterP1");
-            }, 3000);
-        }
-    });
-});
-
 $('#bt_createCommands').on('click', function () {
     $.ajax({
         type: "POST",
@@ -112,30 +88,4 @@ $('#bt_createCommands').on('click', function () {
             $('.eqLogicDisplayCard[data-eqLogic_id=' + $('.eqLogicAttr[data-l1key=id]').value() + ']').click();
         }
     });
-});
-
-$(".eqLogicAttr[data-l1key='configuration'][data-l2key='type']").change(function () {
-    $('#img_device').attr("src", 'core/img/no_image.gif');
-
-    if ($(this).value() != '') {
-        $.ajax({
-            type: "POST",
-            url: "plugins/SmartMeterP1/core/ajax/SmartMeterP1.ajax.php",
-            data: {
-                action: "getImage",
-                id: $('.eqLogicAttr[data-l1key=id]').value()
-            },
-            dataType: 'json',
-            error: function (request, status, error) {
-                handleAjaxError(request, status, error);
-            },
-            success: function (data) {
-                if (data.state != 'ok') {
-                    return;
-                }
-                console.log(data)
-                $('#img_device').attr("src", data.result);
-            }
-        })
-    }
 });
