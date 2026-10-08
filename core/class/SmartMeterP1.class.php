@@ -285,7 +285,7 @@ class SmartMeterP1Cmd extends cmd {
 		return true;
 	}
 
-	public function execute($_options = array()) {
+	public function execute($_options = array()): bool {
 		/** @var SmartMeterP1 */
 		$eqLogic = $this->getEqLogic();
 		log::add('SmartMeterP1', 'debug', "command: {$this->getLogicalId()} on {$eqLogic->getLogicalId()} : {$eqLogic->getName()}");
@@ -297,5 +297,6 @@ class SmartMeterP1Cmd extends cmd {
 				$eqLogic->disconnectP1();
 				break;
 		}
+		return true;
 	}
 }
