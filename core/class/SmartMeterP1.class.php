@@ -115,7 +115,7 @@ class SmartMeterP1 extends eqLogic {
 		return ($daemon_info['state'] === 'ok');
 	}
 
-	public function handleMessage($data) {
+	public function handleMessage(array $data) {
 		log::add(__CLASS__, 'debug', "handleMessage: " . json_encode($data));
 		foreach ($data as $code => $value) {
 			$this->checkAndUpdateCmd($code, $value);
